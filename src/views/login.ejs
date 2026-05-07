@@ -47,8 +47,11 @@
 
 
 
+  
 
     <div class="right">
+     <form action="/login" method="POST">
+
       <p class="form-sub">
         Faça login para acessar sua conta e acompanhar<br>a qualidade do ar em tempo real.
       </p>
@@ -61,11 +64,11 @@
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </span>
-        <input class="field-input" type="text" id="usuario" placeholder="Digite seu email ou usuário"/>
+        <input class="field-input" type="text" name="user" placeholder="Digite seu email ou usuário"/>
       </div>
 
 
-form
+
       
       <label class="field-label" for="senha">Senha</label>
       <div class="field-wrap">
@@ -75,7 +78,7 @@ form
             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
         </span>
-        <input class="field-input" type="password" id="senha" placeholder="Digite sua senha"/>
+        <input class="field-input" type="password" name="senha" placeholder="Digite sua senha"/>
         <button class="eye-btn" onclick="toggleSenha()" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -84,15 +87,11 @@ form
         </button>
       </div>
 
-
-
-
-
       <a href="#" class="forgot">Esqueci minha senha</a>
 
 
 
-      <button class="btn-login">Entrar</button>
+      <button class="btn-login" type="submit">Entrar</button>
 
 
 
@@ -104,7 +103,11 @@ form
       </div>
 
       <p class="register-line">Não tem uma conta? <a href="#">Quero me cadastrar</a></p>
+    
+     </form>
     </div>
+
+
   </div>
 
   <script>
