@@ -10,6 +10,8 @@ router.get("/home", AuthController.showHome);
 
 router.post("/login", AuthController.login);
 
+router.get("/cadastro", AuthController.showCadastro);
+
 
 
 

@@ -8,6 +8,12 @@ return res.render("login");
 
 }
 
+showCadastro(req, res){
+
+return res.render("cadastro");
+
+}
+
 showHome(req, res){
 
 return res.render("home");
