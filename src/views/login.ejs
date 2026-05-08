@@ -82,6 +82,7 @@
         <button class="eye-btn" onclick="toggleSenha()" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
         </button>
@@ -110,10 +111,35 @@
 
   </div>
 
-  <script>
+
+<script>
+  
+  const olho_fechado = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"> <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>        <line x1="1" y1="1" x2="23" y2="23"/>            <circle cx="12" cy="12" r="3"/>        </svg>';
+  const olho_aberto  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"> <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>        <circle cx="12" cy="12" r="3"/>      </svg>';
+
+
     function toggleSenha() {
-      const input = document.getElementById('senha');
-      input.type = input.type === 'password' ? 'text' : 'password';
+       const input = document.getElementsByName('senha')[0];
+      const icone = document.querySelector('.eye-btn');
+
+      if(input.type === 'password'){
+
+        input.type = 'text';
+        icone.innerHTML = olho_aberto;
+
+
+
+      }
+      else{
+
+          input.type = 'password';
+          icone.innerHTML = olho_fechado;
+
+
+
+      }
+
+      //input.type = input.type === 'password' ? 'text' : 'password';
     }
   </script>
 
