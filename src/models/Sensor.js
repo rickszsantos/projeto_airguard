@@ -16,6 +16,13 @@ class Sensor{
     }
 
 
+    salvarLeitura(req, res){
+
+   
+
+    }
+
+
 
 
 

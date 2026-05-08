@@ -12,7 +12,12 @@ class Usuario {
         $this.status = true;
     }
 
+
+
     buscarPorEmail($emailFornecido){
+
+        //verificar se o email ta no banco
+
         return null;
     }
 
