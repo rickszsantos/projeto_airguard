@@ -10,6 +10,35 @@
       padding: 2rem;
     }
 
+        body {
+  position: relative;
+  overflow: hidden; /* opcional, evita scroll se as bolas saírem da tela */
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  bottom: -80px;
+  left: -80px;
+  width: 700px;
+  height: 700px;
+  background: rgba(100, 180, 255, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -150px;
+  right: -150px;
+  width: 600px;
+  height: 600px;
+  background: rgba(100, 180, 255, 0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
     .wrap {
       display: flex;
       width: 100%;
