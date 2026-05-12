@@ -12,7 +12,7 @@
 
         body {
   position: relative;
-  overflow: hidden; /* opcional, evita scroll se as bolas saírem da tela */
+  overflow: hidden; /* evita scroll se as bolas saírem da tela */
 }
 
 body::before {

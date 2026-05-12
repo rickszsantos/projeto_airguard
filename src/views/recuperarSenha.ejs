@@ -33,7 +33,7 @@
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
     }
 
-    /* ── LEFT PANEL ── */
+    /* ── painel esquerdo ── */
     .left {
       flex: 0 0 46%;
       background: linear-gradient(145deg, #2856c8 0%, #1a3a9e 60%, #152f85 100%);
@@ -45,7 +45,7 @@
       overflow: hidden;
     }
 
-    /* decorative circles */
+    /* circulos decorativos  */
     .left::before {
       content: '';
       position: absolute;
@@ -123,7 +123,7 @@
       line-height: 1.4;
     }
 
-    /* ── RIGHT PANEL ── */
+    /* ── painel direito ── */
     .right {
       flex: 1;
       background: #eef0f5;
@@ -144,7 +144,7 @@
       line-height: 1.55;
     }
 
-    /* step indicator */
+    /* indicador de passos  */
     .steps {
       display: flex;
       align-items: center;
@@ -209,7 +209,7 @@
       background: #2856c8;
     }
 
-    /* form */
+    
     .field {
       margin-bottom: 18px;
     }
@@ -335,7 +335,6 @@
       text-decoration: underline;
     }
 
-    /* ── SUCCESS STATE (hidden by default) ── */
     .success-state {
       display: none;
       flex-direction: column;
@@ -403,7 +402,7 @@
 
 <div class="card">
 
-  <!-- LEFT -->
+  <!-- esquerdo -->
   <div class="left">
     <div class="left-top">
       <h1>NOME DO PROJETO</h1>
@@ -431,10 +430,10 @@
     </div>
   </div>
 
-  <!-- RIGHT -->
+  <!-- direito -->
   <div class="right">
 
-    <!-- STEP INDICATOR -->
+    <!-- indicador de passos-->
     <div class="steps">
       <div class="step active" id="step1">
         <div class="step-circle">1</div>
@@ -452,7 +451,7 @@
       </div>
     </div>
 
-    <!-- FORM STATE -->
+    
     <div id="form-state">
       <div class="right-header">
         <p class="subtitle">Informe o e-mail cadastrado para receber o link de recuperação de senha.</p>
@@ -478,7 +477,6 @@
       <p class="back-link">Lembrou a senha? <a href="/">Voltar ao login</a></p>
     </div>
 
-    <!-- SUCCESS STATE -->
     <div id="success-state" class="success-state">
       <div class="success-icon">
         <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
