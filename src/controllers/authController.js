@@ -22,10 +22,10 @@ return res.render("home");
 
 
 
-
 login(req, res) {
-    const user = req.body.user;
-    const senha = req.body.senha;
+
+
+    const {user, senha} = req.body;
 
     if(user === "adm" && senha === "123"){
        res.redirect("/home");

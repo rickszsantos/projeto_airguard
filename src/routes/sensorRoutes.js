@@ -3,7 +3,9 @@ const routes = express.Router();
 const sensorController = require("../controllers/sensorController");
 
 
-routes.post("/leitura", sensorController.receber_leitura);
+routes.post("/dados", sensorController.receberDados);
+
+routes.get("/dados", sensorController.listarDados)
 
 
 

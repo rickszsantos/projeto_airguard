@@ -1,5 +1,11 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
 const app = express(); // "init"
+const server = http.createServer(app);
+const io = new Server(server);
+
+
 require('dotenv').config();
 const authRoutes = require("./src/routes/authRoutes");
 const sensorRoutes = require("./src/routes/sensorRoutes");
@@ -15,6 +21,21 @@ app.use("/api", sensorRoutes);
 
 
 
+io.on('connection', (socket) => {
+    console.log('ESP32 conectado!');
+
+    socket.on('leitura', (dado) => {
+        // recebe do ESP32
+        sensorController.receberDados(dado);
+
+        // repassa para o browser em tempo real
+        io.emit('novaLeitura', dado);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('ESP32 desconectado');
+    });
+});
 
 
 
@@ -23,6 +44,7 @@ app.use("/api", sensorRoutes);
 
 
 
-app.listen(3000, () => {
+
+server.listen(3000, () => {
   console.log("Servidor rodando");
 });
