@@ -12,6 +12,7 @@ routes.get("/cadastro", AuthController.showCadastro);
 
 routes.post("/login", AuthController.login);
 
+routes.get("/recuperar-senha", AuthController.showRecuperarSenha);
 
 
 

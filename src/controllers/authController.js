@@ -46,6 +46,10 @@ login(req, res) {
 }
 
 
+showRecuperarSenha(req, res) {
+  res.render("recuperarSenha");
+}
+
 
 
 

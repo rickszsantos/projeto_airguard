@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recuperar Senha</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #1a3a8f;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      display: flex;
+      width: 860px;
+      max-width: 100%;
+      min-height: 480px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      flex: 0 0 46%;
+      background: linear-gradient(145deg, #2856c8 0%, #1a3a9e 60%, #152f85 100%);
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* decorative circles */
+    .left::before {
+      content: '';
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      bottom: -80px;
+      left: -60px;
+    }
+    .left::after {
+      content: '';
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      top: 30px;
+      right: -40px;
+    }
+
+    .left-top h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+
+    .left-top p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.55;
+    }
+
+    .features {
+      display: flex;
+      gap: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .feature-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .feature span {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.75);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+      flex: 1;
+      background: #eef0f5;
+      padding: 48px 48px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .right-header p.subtitle {
+      font-size: 0.9rem;
+      color: #8a92a6;
+      line-height: 1.55;
+    }
+
+    /* step indicator */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .step-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .step.active .step-circle {
+      background: #2856c8;
+      color: #fff;
+    }
+
+    .step.inactive .step-circle {
+      background: #d0d4e0;
+      color: #8a92a6;
+    }
+
+    .step.done .step-circle {
+      background: #2856c8;
+      color: #fff;
+    }
+
+    .step-label {
+      font-size: 0.65rem;
+      color: #8a92a6;
+      white-space: nowrap;
+    }
+
+    .step.active .step-label {
+      color: #2856c8;
+      font-weight: 700;
+    }
+
+    .step-line {
+      width: 48px;
+      height: 2px;
+      background: #d0d4e0;
+      margin: 0 4px;
+      margin-bottom: 18px;
+    }
+
+    .step-line.done {
+      background: #2856c8;
+    }
+
+    /* form */
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #3a4060;
+      margin-bottom: 7px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrap .icon {
+      position: absolute;
+      left: 14px;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .input-wrap .icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #9ba3b8;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 13px 14px 13px 42px;
+      border: none;
+      border-radius: 10px;
+      background: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.88rem;
+      color: #3a4060;
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+
+    .input-wrap input::placeholder {
+      color: #b0b7c8;
+    }
+
+    .input-wrap input:focus {
+      box-shadow: 0 0 0 2.5px #2856c8;
+    }
+
+    .info-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #e8edf8;
+      border-left: 3px solid #2856c8;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+    }
+
+    .info-box svg {
+      width: 17px;
+      height: 17px;
+      stroke: #2856c8;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .info-box p {
+      font-size: 0.78rem;
+      color: #4a5680;
+      line-height: 1.5;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #2856c8;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-primary:hover {
+      background: #1e45a8;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #8a92a6;
+    }
+
+    .back-link a {
+      color: #2856c8;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── SUCCESS STATE (hidden by default) ── */
+    .success-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #e8edf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-icon svg {
+      width: 30px;
+      height: 30px;
+      stroke: #2856c8;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .success-state h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #2a3250;
+    }
+
+    .success-state p {
+      font-size: 0.85rem;
+      color: #8a92a6;
+      line-height: 1.55;
+      max-width: 280px;
+    }
+
+    .success-state .email-highlight {
+      color: #2856c8;
+      font-weight: 700;
+    }
+
+    .resend {
+      font-size: 0.82rem;
+      color: #8a92a6;
+    }
+
+    .resend a {
+      color: #2856c8;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .resend a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="left-top">
+      <h1>NOME DO PROJETO</h1>
+      <p>Monitoramento inteligente da qualidade do ar</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 8l7-5 4 3 4-3 3 5"/><path d="M3 8v10a1 1 0 001 1h16a1 1 0 001-1V8"/></svg>
+        </div>
+        <span>Qualidade do ar em tempo real</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <span>Segurança e confiabilidade</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <span>Dados precisos para decisões</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+
+    <!-- STEP INDICATOR -->
+    <div class="steps">
+      <div class="step active" id="step1">
+        <div class="step-circle">1</div>
+        <span class="step-label">Informe o e-mail</span>
+      </div>
+      <div class="step-line" id="line1"></div>
+      <div class="step inactive" id="step2">
+        <div class="step-circle">2</div>
+        <span class="step-label">Verifique o e-mail</span>
+      </div>
+      <div class="step-line" id="line2"></div>
+      <div class="step inactive" id="step3">
+        <div class="step-circle">3</div>
+        <span class="step-label">Nova senha</span>
+      </div>
+    </div>
+
+    <!-- FORM STATE -->
+    <div id="form-state">
+      <div class="right-header">
+        <p class="subtitle">Informe o e-mail cadastrado para receber o link de recuperação de senha.</p>
+      </div>
+
+      <div class="info-box">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p>Enviaremos um link seguro para o e-mail informado. Verifique também a caixa de spam.</p>
+      </div>
+
+      <div class="field">
+        <label for="email">Email ou usuário</label>
+        <div class="input-wrap">
+          <span class="icon">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <input type="email" id="email" placeholder="Digite seu email ou usuário" />
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="sendRecovery()">Enviar link de recuperação</button>
+
+      <p class="back-link">Lembrou a senha? <a href="/">Voltar ao login</a></p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="success-state" class="success-state">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <h2>E-mail enviado!</h2>
+      <p>Enviamos o link de recuperação para <span class="email-highlight" id="sent-email"></span>. Verifique sua caixa de entrada.</p>
+      <p class="resend">Não recebeu? <a onclick="resend()">Reenviar e-mail</a></p>
+      <button class="btn-primary" style="margin-top:6px" onclick="window.location.href='/'">Voltar ao login</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function sendRecovery() {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      document.getElementById('email').focus();
+      document.getElementById('email').style.boxShadow = '0 0 0 2.5px #e74c3c';
+      setTimeout(() => document.getElementById('email').style.boxShadow = '', 1500);
+      return;
+    }
+
+    // activate step 2
+    document.getElementById('step2').className = 'step active';
+    document.getElementById('line1').className = 'step-line done';
+
+    document.getElementById('sent-email').textContent = email;
+    document.getElementById('form-state').style.display = 'none';
+    document.getElementById('success-state').style.display = 'flex';
+  }
+
+  function resend() {
+    const el = document.querySelector('.resend');
+    el.innerHTML = '<span style="color:#2856c8;font-weight:700">✓ E-mail reenviado!</span>';
+    setTimeout(() => {
+      el.innerHTML = 'Não recebeu? <a onclick="resend()">Reenviar e-mail</a>';
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
