@@ -1,3 +1,5 @@
+
+
 class Sensor{
 
     // nome; //mq135, mq 7
@@ -7,20 +9,20 @@ class Sensor{
     
     constructor(){
 
-        $this.registros = []
+        this.registros = []
 
 
     }
 
 
-    salvarLeitura(req, res){
+    salvarLeitura(leitura){
         
         //conectar com o banco e 
         this.registros.push(leitura);
 
     }
 
-    listarDados(req, res){
+    listarDados(){
 
         return this.registros;
 
@@ -33,3 +35,5 @@ class Sensor{
 
 
 }
+
+module.exports = new Sensor();

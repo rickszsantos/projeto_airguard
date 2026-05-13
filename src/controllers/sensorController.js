@@ -1,4 +1,4 @@
-const sensorModel = require("../models/Sensor");
+const sensor = require("../models/Sensor");
 
 class SensorController {
 
@@ -10,22 +10,25 @@ receberDados(req, res){
 
     if(temperatura === undefined || umidade === undefined){
 
-            return console.log("sem leitura");
+          return res.status(400).json({   erro: "Sem leitura" });
 
     }
 
 
 
     const leitura = {                  
-        temperatura: parseFloat(body.temperatura),
-        umidade: parseFloat(body.umidade),
-        timestamp: new Date().toISOString
+        temperatura: parseFloat(temperatura),
+        umidade: parseFloat(umidade),
+        timestamp: new Date().toISOString()
     }
 
 
 
-    sensorModel.salvarLeitura(leitura);
+    sensor.salvarLeitura(leitura);
 
+
+    
+    return res.status(201).json({ status: "ok", recebido: leitura });
 
 }
 
@@ -35,7 +38,7 @@ receberDados(req, res){
 
 listarDados(req, res){
 
-    const lista = sensorModel.listarDados();
+    const lista = sensor.listarDados();
     res.json(lista);
 
 }
