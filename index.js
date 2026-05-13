@@ -3,10 +3,12 @@ const http = require("http");
 const { Server } = require("socket.io");
 const app = express(); // "init"
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, { cors: { origin: "*"}});
 
 
 require('dotenv').config();
+require('dotenv').config();
+const porta = process.env.PORT;
 const authRoutes = require("./src/routes/authRoutes");
 const sensorRoutes = require("./src/routes/sensorRoutes");
 
@@ -45,6 +47,6 @@ io.on('connection', (socket) => {
 
 
 
-server.listen(3000, () => {
+server.listen(porta, () => {
   console.log("Servidor rodando");
 });
