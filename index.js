@@ -1,49 +1,51 @@
 require('dotenv').config();
-const porta = process.env.PORT;
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
+const porta   = process.env.PORT;
+const express = require('express');
+const http    = require('http');
+const { WebSocketServer } = require('ws');
 
-
-const app = express(); // "init"
+const app    = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*"}});
+const wss    = new WebSocketServer({ server });
 
+const authRoutes       = require('./src/routes/authRoutes');
+const sensorRoutes     = require('./src/routes/sensorRoutes');
+const sensorController = require('./src/controllers/sensorController');
 
-
-const authRoutes = require("./src/routes/authRoutes");
-const sensorRoutes = require("./src/routes/sensorRoutes");
-
-
-
-
-app.use(express.static("public"));
+app.use(express.static('public'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+app.set('views', './src/views');
+app.use('/', authRoutes);
+app.use('/api', sensorRoutes);
 
 
 
-//renderizar as telas e carregar a pasta de viws
-app.set("view engine", "ejs");
-app.set("views", "./src/views");
-//rotas
-app.use("/", authRoutes);
-app.use("/api", sensorRoutes);
-
-
-
-io.on('connection', (socket) => {
+wss.on('connection', (ws) => {
     console.log('ESP32 conectado!');
 
-    socket.on('leitura', (dado) => {
-        // recebe do ESP32
-        sensorController.receberDados(dado);
+    ws.on('message', (msg) => {
+        const dado = JSON.parse(msg);
+        console.log('recebido:', dado);
 
-        // repassa para o browser em tempo real
-        io.emit('novaLeitura', dado);
+        const req = { body: dado };
+        const res = {
+            status: (code) => ({
+                json: (data) => console.log(`status ${code}:`, data)
+            }),
+            json: (data) => console.log('resposta:', data)
+        };
+
+        sensorController.receberDados(req, res);
+
+        // repassa para todos conectados (browser/dashboard)
+        wss.clients.forEach((client) => {
+            client.send(JSON.stringify(dado));
+        });
     });
 
-    socket.on('disconnect', () => {
+    ws.on('close', () => {
         console.log('ESP32 desconectado');
     });
 });
@@ -51,14 +53,8 @@ io.on('connection', (socket) => {
 
 
 
-
-
-
-
-
 server.listen(porta, () => {
-  console.log("Servidor rodando");
+    console.log('Servidor rodando na porta', porta);
 });
-
 
 module.exports = app;

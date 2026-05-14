@@ -2,7 +2,29 @@ const sensor = require("../models/Sensor");
 
 class SensorController {
 
+receberDadosWebSocket(dado){
 
+    if(!dado.temperatura || !dado.umidade){
+       return console.log("sem leitura");
+    }
+
+    const leitura = {                  
+        temperatura: parseFloat(temperatura),
+        umidade: parseFloat(umidade),
+        timestamp: new Date().toISOString()
+    }
+
+
+
+
+    sensor.salvarLeitura(leitura);
+    console.log("ok");
+
+}
+
+
+
+//chamada rota HTTP
 receberDados(req, res){
 
     const {temperatura, umidade} = req.body;
@@ -25,11 +47,7 @@ receberDados(req, res){
 
 
     sensor.salvarLeitura(leitura);
-
-
-    
     return res.status(201).json({ status: "ok", recebido: leitura });
-
 }
 
 
