@@ -8,9 +8,14 @@ const app    = express();
 const server = http.createServer(app);
 const wss    = new WebSocketServer({ server });
 
+
 const authRoutes       = require('./src/routes/authRoutes');
 const sensorRoutes     = require('./src/routes/sensorRoutes');
 const sensorController = require('./src/controllers/sensorController');
+
+
+sensorController.setWss(wss);
+
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -39,10 +44,7 @@ wss.on('connection', (ws) => {
 
         sensorController.receberDados(req, res);
 
-        // repassa para todos conectados (browser/dashboard)
-        wss.clients.forEach((client) => {
-            client.send(JSON.stringify(dado));
-        });
+       
     });
 
     ws.on('close', () => {

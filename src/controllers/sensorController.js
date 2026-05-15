@@ -1,26 +1,15 @@
 const sensor = require("../models/Sensor");
 
+// recebe o wss de fora para poder emitir
+let wssRef = null;
+
 class SensorController {
 
-receberDadosWebSocket(dado){
 
-    if(!dado.temperatura || !dado.umidade){
-       return console.log("sem leitura");
+
+    setWss(wss) {
+        wssRef = wss; // guarda a referência do WebSocket
     }
-
-    const leitura = {                  
-        temperatura: parseFloat(temperatura),
-        umidade: parseFloat(umidade),
-        timestamp: new Date().toISOString()
-    }
-
-
-
-
-    sensor.salvarLeitura(leitura);
-    console.log("ok");
-
-}
 
 
 
@@ -47,6 +36,14 @@ receberDados(req, res){
 
 
     sensor.salvarLeitura(leitura);
+
+    if (wssRef) {
+            wssRef.clients.forEach((client) => {
+                client.send(JSON.stringify(leitura));
+            });
+        }
+
+
     return res.status(201).json({ status: "ok", recebido: leitura });
 }
 
