@@ -1,13 +1,181 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NOME PROJETO — Cadastro</title>
+  <link rel="stylesheet" href="/css/cadastro.css">
 </head>
 <body>
-    
-<h1>cadastro</h1>
+
+  <div class="wrap">
+    <div class="left">
+      <div style="text-align:center; position:relative; z-index:1;">
+        <!--COLOCAR LOGO -->
+        <p class="brand-name"><span>NOME DO PROJETO</span></p>
+        <p class="brand-sub">Monitoramento inteligente da<br>qualidade do ar</p>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round">
+              <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/>
+            </svg>
+          </div>
+          <p class="feature-text">Qualidade do ar<br>em tempo real</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <p class="feature-text">Segurança e<br>confiabilidade</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <p class="feature-text">Dados precisos<br>para decisões</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <form action="/cadastro" method="POST">
+
+        <p class="form-sub">
+          Crie sua conta e comece a monitorar<br>a qualidade do ar agora mesmo.
+        </p>
+
+        <!-- Nome completo -->
+        <label class="field-label" for="nome">Nome completo</label>
+        <div class="field-wrap">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <input class="field-input" type="text" name="nome" id="nome" placeholder="Digite seu nome completo"/>
+        </div>
+
+        <!-- Email -->
+        <label class="field-label" for="email">Email</label>
+        <div class="field-wrap">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </span>
+          <input class="field-input" type="email" name="email" id="email" placeholder="Digite seu email"/>
+        </div>
+
+        <!-- Senha -->
+        <label class="field-label" for="senha">Senha</label>
+        <div class="field-wrap">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input class="field-input" type="password" name="senha" id="senha" placeholder="Crie uma senha"/>
+          <button class="eye-btn" onclick="toggleSenha('senha', 'olho1')" type="button" id="olho1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Indicador de força da senha -->
+        <div class="senha-forca">
+          <div class="forca-barra">
+            <div class="forca-fill" id="forca-fill"></div>
+          </div>
+          <span class="forca-texto" id="forca-texto"></span>
+        </div>
+
+        <!-- Confirmar senha -->
+        <label class="field-label" for="confirmar">Confirmar senha</label>
+        <div class="field-wrap">
+          <span class="field-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input class="field-input" type="password" name="confirmar" id="confirmar" placeholder="Repita a senha"/>
+          <button class="eye-btn" onclick="toggleSenha('confirmar', 'olho2')" type="button" id="olho2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        <button class="btn-cadastro" type="submit">Criar conta</button>
+
+        <div class="divider">
+          <div class="div-line"></div>
+          <span class="div-text">ou</span>
+          <div class="div-line"></div>
+        </div>
+
+        <p class="login-line">Já tem uma conta? <a href="/login">Fazer login</a></p>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const olho_fechado = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><line x1="1" y1="1" x2="23" y2="23"/><circle cx="12" cy="12" r="3"/></svg>';
+    const olho_aberto  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+    function toggleSenha(inputId, btnId) {
+      const input = document.getElementById(inputId);
+      const btn   = document.getElementById(btnId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.innerHTML = olho_aberto;
+      } else {
+        input.type = 'password';
+        btn.innerHTML = olho_fechado;
+      }
+    }
+
+    document.getElementById('senha').addEventListener('input', function () {
+      const val   = this.value;
+      const fill  = document.getElementById('forca-fill');
+      const texto = document.getElementById('forca-texto');
+      let forca = 0;
+      if (val.length >= 6)                          forca++;
+      if (val.length >= 10)                         forca++;
+      if (/[A-Z]/.test(val) && /[a-z]/.test(val))  forca++;
+      if (/[0-9]/.test(val))                        forca++;
+      if (/[^A-Za-z0-9]/.test(val))                forca++;
+
+      const niveis = [
+        { label: '',       color: 'transparent', width: '0%'   },
+        { label: 'Fraca',  color: '#ef4444',     width: '25%'  },
+        { label: 'Média',  color: '#f59e0b',     width: '60%'  },
+        { label: 'Boa',    color: '#3b82f6',     width: '80%'  },
+        { label: 'Forte',  color: '#22c55e',     width: '100%' },
+      ];
+      const nivel = val.length === 0 ? niveis[0] : forca <= 1 ? niveis[1] : forca === 2 ? niveis[2] : forca <= 3 ? niveis[3] : niveis[4];
+      fill.style.width           = nivel.width;
+      fill.style.backgroundColor = nivel.color;
+      texto.textContent          = nivel.label;
+      texto.style.color          = nivel.color;
+    });
+  </script>
 
 </body>
 </html>

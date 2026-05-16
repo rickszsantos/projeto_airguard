@@ -14,6 +14,8 @@ routes.post("/login", AuthController.login);
 
 routes.get("/recuperar-senha", AuthController.showRecuperarSenha);
 
+routes.get("/login", AuthController.showLogin);
+
 
 
 

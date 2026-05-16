@@ -1,43 +1,25 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      min-height: 100vh;
-      background: #0c3c85;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      padding: 2rem;
-    }
+body {
+  min-height: 100vh;
+  background-image: url('/imagens/cidade.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
 
         body {
   position: relative;
   overflow: hidden; /* evita scroll se as bolas saírem da tela */
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  bottom: -80px;
-  left: -80px;
-  width: 700px;
-  height: 700px;
-  background: rgba(100, 180, 255, 0.12);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  top: -150px;
-  right: -150px;
-  width: 600px;
-  height: 600px;
-  background: rgba(100, 180, 255, 0.08);
-  border-radius: 50%;
-  pointer-events: none;
-}
 
     .wrap {
       display: flex;
