@@ -1,6 +1,6 @@
 const usuario = require("../models/Usuario");
 const bcrypt = require("bcrypt");
-//const validador = require("validator");
+const validador = require("validator");
 
 class AuthController {
 
@@ -148,7 +148,12 @@ validarsenha(senha){
       
 }
 
+validaremail(email) {
 
+    if(validador.isEmail(email)){ return {valido: true};}
+    else{ return { valido: false, mensagem: "Digite um email valido" } }
+
+}
 
 
 
