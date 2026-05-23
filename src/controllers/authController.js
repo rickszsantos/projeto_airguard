@@ -1,5 +1,5 @@
 const usuario = require("../models/Usuario");
-//const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 //const validador = require("validator");
 
 class AuthController {
@@ -125,6 +125,29 @@ async cadastro(req, res) {
     }
 
 }
+
+
+
+validarsenha(senha){
+
+
+      if (senha.length >= 6 && 
+          /[A-Z]/.test(senha) && 
+          /[a-z]/.test(senha) && 
+          /[0-9]/.test(senha) && 
+          /[^A-Za-z0-9]/.test(senha))
+          {
+
+                return { valido: true };
+
+          }
+          else{
+
+                return { valido: false, mensagem: "Senha fraca. Use letras, números e símbolos." }
+          }
+      
+}
+
 
 
 
