@@ -19,20 +19,14 @@ class Usuario {
 
     salvarUser(nome, email, senha) {
 
-        const user = {                  
-                nome: nome,
-                email: email,
-                senha: senha,
-        }
-
-        this.registrosuser.push(user);
+        this.registrosuser.push({nome, email, senha});
 
     }
 
 
     emailExiste(email) {
 
-        return registrouser.find((user) => 
+        return this.registrosuser.find((user) => 
 
              user.email === email
 
@@ -42,11 +36,6 @@ class Usuario {
 
 
     }
-
-
     
-
-
-
-
 }
+module.exports = new Usuario();

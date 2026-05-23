@@ -8,74 +8,13 @@ class AuthController {
 
 
    
-showLogin(req, res){
+showLogin(req, res)          { return res.render("login"); }
 
-return res.render("login");
+showCadastro(req, res)       { return res.render("cadastro"); }
 
-}
+showRecuperarSenha(req, res) { res.render("recuperarSenha"); }
 
-
-
-
-
-showCadastro(req, res){
-
-return res.render("cadastro");
-
-}
-
-
-
-
-
-showRecuperarSenha(req, res) {
-  res.render("recuperarSenha");
-}
-
-
-
-
-
-showHome(req, res){
-
-return res.render("home");
-
-}
-
-
-
-
-
-
-
-async login(req, res) {
-
-    const {user, senha} = req.body;
-
-    if(user === "adm" && senha === "123"){
-       res.redirect("/home");
-    }
-    else{
-     return res.render("login", { erro: "Login inválido" });
-    }
-
-    /*
-    if($usuario && $senha == $usuario.verificarSenha($senha)){
-       res.redirect("/home");
-    }
-    else{
-     return res.render("login", { erro: "Login inválido" });
-    }
-    */
-
-}
-
-
-
-
-
-
-
+showHome(req, res)           { return res.render("home"); }
 
 
 
@@ -128,6 +67,41 @@ async cadastro(req, res) {
 
 
 
+async login(req, res) {
+
+    const {user, senha} = req.body;
+
+    if(user === "adm" && senha === "123"){
+       res.redirect("/home");
+    }
+    else{
+     return res.render("login", { erro: "Login inválido" });
+    }
+
+    /*
+    if($usuario && $senha == $usuario.verificarSenha($senha)){
+       res.redirect("/home");
+    }
+    else{
+     return res.render("login", { erro: "Login inválido" });
+    }
+    */
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 validarSenha(senha){
 
 
@@ -152,7 +126,7 @@ validarEmail(email) {
 
     if(validador.isEmail(email)){ 
 
-        if(usuario.emailExiste(email)){ return{ valido: false, mensagem: "Email já exixtente"} }
+        if(usuario.emailExiste(email)){ return{ valido: false, mensagem: "Email já existente"} }
         return {valido: true};
 
     }

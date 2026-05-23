@@ -47,13 +47,21 @@ body {
   background: rgba(100, 180, 255, 0.12);
   border-radius: 50%;
 }
+.erro-box{
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
 
 .left::after {
   content: '';
   position: absolute;
   top: -60px; right: -60px;
   width: 220px; height: 220px;
-  background: rgba(100, 180, 255, 0.08);
+  background: rgba(124, 177, 228, 0.08);
   border-radius: 50%;
 }
 
