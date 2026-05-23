@@ -90,7 +90,7 @@ async cadastro(req, res) {
         }
          
 
-         const senhavalida = this.validarsenha(senha);
+         const senhavalida = this.validarSenha(senha);
 
          if(!senhavalida.valido) {
 
@@ -99,7 +99,7 @@ async cadastro(req, res) {
          }
 
 
-          const emailvalido = this.validaremail(email);
+          const emailvalido = this.validarEmail(email);
 
           if(!emailvalido.valido) {
 
@@ -128,7 +128,7 @@ async cadastro(req, res) {
 
 
 
-validarsenha(senha){
+validarSenha(senha){
 
 
       if (senha.length >= 6 && 
@@ -148,10 +148,19 @@ validarsenha(senha){
       
 }
 
-validaremail(email) {
+validarEmail(email) {
 
-    if(validador.isEmail(email)){ return {valido: true};}
-    else{ return { valido: false, mensagem: "Digite um email valido" } }
+    if(validador.isEmail(email)){ 
+
+        if(usuario.emailExiste(email)){ return{ valido: false, mensagem: "Email já exixtente"} }
+        return {valido: true};
+
+    }
+    else{ 
+
+        return { valido: false, mensagem: "Digite um email valido" } 
+    
+    }
 
 }
 
