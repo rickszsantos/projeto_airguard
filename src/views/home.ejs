@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AirGuard - Qualidade do Ar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <link rel="stylesheet" href="/css/home.css">>
 </head>
 <body>
@@ -87,20 +88,149 @@
             <div class="chart-card">
                 <h2>Índice de Qualidade do Ar</h2>
                 <div class="chart-wrap">
-                    <!--
-                    ═══════════════════════════════════════════════════
-                    ÁREA DO GRÁFICO — COLOQUE SEU CÓDIGO CHART.JS AQUI
-                    ═══════════════════════════════════════════════════
-                    1. Adicione no <head>:
-                       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-                    2. Substitua este comentário pelo canvas:
-                       <canvas id="meuGrafico"></canvas>
 
-                    3. Adicione o script de inicialização do Chart.js
-                       e a conexão WebSocket antes do </body>
-                    ═══════════════════════════════════════════════════
-                    -->
+
+
+
+
+
+
+
+
+
+  <!-- GRÁFICO -->
+  <div style="width: 90%; margin: auto;">
+    <canvas id="meuGrafico"></canvas>
+  </div>
+
+  <script>
+    // =========================
+    // DADOS INICIAIS
+    // =========================
+    const data = {
+      datasets: [{
+        label: 'Qualidade do Ar',
+        data: [],
+        borderWidth: 2,
+        tension: 0.3
+      }]
+    };
+
+    // =========================
+    // CONFIGURAÇÃO DO GRÁFICO
+    // =========================
+    const config = {
+      type: 'line',
+
+      data: data,
+
+      options: {
+        responsive: true,
+
+        animation: false,
+
+        scales: {
+
+          // EIXO X = TEMPO
+          x: {
+            type: 'time',
+
+            time: {
+              unit: 'minute'
+            },
+
+            title: {
+              display: true,
+              text: 'Horário'
+            }
+          },
+
+          // EIXO Y = VALOR SENSOR
+          y: {
+            beginAtZero: true,
+
+            title: {
+              display: true,
+              text: 'Nível de Poluição'
+            }
+          }
+        }
+      }
+    };
+
+    // =========================
+    // CRIA O GRÁFICO
+    // =========================
+    const meuGrafico = new Chart(
+      document.getElementById('meuGrafico'),
+      config
+    );
+
+    // =========================
+    // WEBSOCKET
+    // =========================
+
+    // Exemplo:
+    // troque pela URL do seu servidor
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onmessage = function(event) {
+
+      // RECEBE DADOS DO SERVIDOR
+      const valorSensor = JSON.parse(event.data);
+
+      // HORÁRIO ATUAL
+      const agora = new Date();
+
+      // ADICIONA NOVO PONTO
+      meuGrafico.data.datasets[0].data.push({
+        x: agora,
+        y: valorSensor.valor
+      });
+
+      // LIMITA QUANTIDADE DE PONTOS
+      if (meuGrafico.data.datasets[0].data.length > 20) {
+        meuGrafico.data.datasets[0].data.shift();
+      }
+
+      // ATUALIZA GRÁFICO
+      meuGrafico.update();
+    };
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <canvas id="meuGrafico" style="width:100%;height:100%;"></canvas>
                 </div>
             </div>

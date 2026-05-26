@@ -9,6 +9,10 @@ class AuthController {
   showRecuperarSenha(req, res) { return res.render('recuperarSenha'); }
   showHome(req, res)           { return res.render('home'); }
  
+
+
+
+
   // ── Cadastro ─────────────────────────────────────────────────────────────
   async cadastro(req, res) {
     try {
@@ -22,7 +26,6 @@ class AuthController {
       Usuario.salvarUser(nome, email, senhaHash);
  
       // Redireciona para o login com mensagem de sucesso
-      // A mensagem é passada via query string: /login?cadastrado=1
       return res.redirect('/login?cadastrado=1');
  
     } catch (erro) {
