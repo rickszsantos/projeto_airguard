@@ -1,15 +1,8 @@
 class Usuario {
 
-     //nome;
-     //email;
-     //#senha;
-     //status;
-
-
-
     constructor(){
         
-        this.registrosuser = []
+        this.registros = []
 
     }
 
@@ -19,23 +12,32 @@ class Usuario {
 
     salvarUser(nome, email, senha) {
 
-        this.registrosuser.push({nome, email, senha});
+        const novoUser = { nome, email, senha };
+
+        this.registros.push(novoUser);
+        return novoUser;
 
     }
 
 
     emailExiste(email) {
 
-        return this.registrosuser.find((user) => 
-
-             user.email === email
-
-        )? true : false;
-
-
-
+    return this.registros.some(user => user.email === email);
 
     }
+
+
+    listarTodos() {
+    return this.registros;
+    }
+
+
+
+    
+    buscarPorEmail(email) {
+    return this.registros.find(user => user.email === email) || null;
+    }
+
     
 }
 module.exports = new Usuario();

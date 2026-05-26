@@ -56,7 +56,15 @@
         Faça login para acessar sua conta e acompanhar<br>a qualidade do ar em tempo real.
       </p>
 
-      <label class="field-label" for="usuario">Email ou usuário</label>
+
+       <% if (typeof erro !== 'undefined' && erro) { %>
+       <div style="background:#fee2e2; border:1px solid #ef4444; color:#b91c1c; border-radius:8px; padding:10px 14px; font-size:0.85rem; margin-bottom:16px; text-align:center;">
+    ⚠️ <%= erro %>
+       </div>
+       <% } %>
+
+
+      <label class="field-label" for="usuario">Email</label>
       <div class="field-wrap">
         <span class="field-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -64,7 +72,7 @@
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </span>
-        <input class="field-input" type="text" name="user" placeholder="Digite seu email ou usuário"/>
+        <input class="field-input" type="text" name="email" placeholder="Digite seu email"/>
       </div>
 
 
