@@ -1,0 +1,22 @@
+Arduino:
+ arduinoHttpClient
+ Adafruit Unifiend
+ Arduino-websocket-fast
+ ArduinoJson
+ Bonezegei_DHT22
+ DHT sensor library
+ socketioClient
+ websockets
+ wifi.h
+ arduinoJson
+
+Dependencias Json:
+ bcrypt
+ better-sqlite3
+ dotenv
+ ejs
+ express
+ express-session
+ serialport
+ validator
+ ws
