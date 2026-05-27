@@ -1,0 +1,12 @@
+{
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:projeto_airguard}/database/banco.db",
+            "name": "Airguard DB",
+            "group": "Airguard DB"
+        }
+    ]
+}
