@@ -172,35 +172,3 @@ BEGIN
             'Sensor ID: ' || NEW.sensor_id || ', Umidade: ' || NEW.umidade || '%');
 END;
  
--- ============================================
--- DADOS FICTÍCIOS PARA TESTE
--- ============================================
- 
--- Inserir usuários
-INSERT INTO usuarios (nome, email, senha, status) VALUES
-('Admin Sistema', 'adm@airguard.com', '123456', 1),
-('João Silva', 'joao@airguard.com', 'senha123', 1),
-('Maria Santos', 'maria@airguard.com', 'senha456', 1);
- 
--- Inserir sensores
-INSERT INTO sensores (usuario_id, tipo, localizacao, status) VALUES
-(1, 'MQ135', 'Sala de estar', 'ativo'),
-(1, 'MQ7', 'Cozinha', 'ativo'),
-(2, 'MQ135', 'Escritório', 'ativo'),
-(3, 'MQ135', 'Quarto', 'ativo'),
-(3, 'MQ7', 'Garagem', 'defeito');
- 
--- Inserir leituras fictícias
-INSERT INTO leituras (sensor_id, temperatura, umidade, created_at) VALUES
-(1, 24.5, 55.2, datetime('now', '-2 hours')),
-(1, 24.8, 54.9, datetime('now', '-1 hours')),
-(1, 25.1, 56.1, datetime('now')),
-(2, 28.3, 62.4, datetime('now', '-1 hours')),
-(2, 28.7, 61.8, datetime('now')),
-(3, 22.1, 48.5, datetime('now', '-2 hours')),
-(3, 22.4, 47.9, datetime('now', '-1 hours')),
-(3, 22.8, 49.2, datetime('now')),
-(4, 23.5, 52.3, datetime('now', '-3 hours')),
-(4, 23.9, 51.8, datetime('now')),
-(2, 31.5, 65.0, datetime('now', '-30 minutes')),
-(1, 26.2, 82.5, datetime('now', '-15 minutes'));

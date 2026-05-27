@@ -1,3 +1,20 @@
+//cria o banco caso não tenha
+const fs   = require('fs');
+const path = require('path');
+
+const dbPath  = path.join(__dirname, 'database/banco.db');
+const sqlPath = path.join(__dirname, 'database/base.sql');
+
+if (!fs.existsSync(dbPath)) {
+  console.log('⚙️  Banco não encontrado, criando...');
+  const Database = require('better-sqlite3');
+  const sql      = fs.readFileSync(sqlPath, 'utf8');
+  const db       = new Database(dbPath);
+  db.exec(sql);
+  console.log('✅ Banco criado com sucesso!');
+}
+
+
 require('dotenv').config();
  
 const express = require('express');
