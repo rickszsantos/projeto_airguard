@@ -26,11 +26,11 @@ const app    = express();
 const server = http.createServer(app);
 const wss    = new WebSocketServer({ server });
  
-const authRoutes       = require('./src/routes/authRoutes');
-const sensorRoutes     = require('./src/routes/sensorRoutes');
-const sensorController = require('./src/controllers/sensorController');
+const AuthRoutes       = require('./src/routes/AuthRoutes');
+const LeituraRoutes     = require('./src/routes/LeituraRoutes');
+const LeituraController = require('./src/controllers/LeituraController');
  
-sensorController.setWss(wss);
+LeituraController.setWss(wss);
  
 
 app.use(express.static('public'));
@@ -57,8 +57,8 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.set('views', './src/views');
 // ── Rotas ─────────────────────────────────────────────────────────────────
-app.use('/', authRoutes);
-app.use('/api', sensorRoutes);
+app.use('/', AuthRoutes);
+app.use('/api', LeituraRoutes);
  
 
 

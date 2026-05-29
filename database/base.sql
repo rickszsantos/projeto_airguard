@@ -147,11 +147,9 @@ CREATE TABLE logs_sistema (
 );
 
 
--- ============================================================
+
 -- SEED: primeiro superadmin
--- Senha: airguard@2025 (trocar após primeiro acesso)
--- Hash bcrypt gerado com 10 rounds
--- ============================================================
+-- Senha: airguard@2025 (trocar depois)
 INSERT INTO usuarios (nome, email, senha, perfil)
 VALUES (
     'Super Admin',
@@ -161,10 +159,9 @@ VALUES (
 );
 
 
--- ============================================================
--- TRIGGERS — updated_at automático
+
+-- TRIGGERS — updated_at automático para logs
 -- leituras e historico são imutáveis — sem updated_at
--- ============================================================
 
 CREATE TRIGGER trg_usuarios_updated_at
 AFTER UPDATE ON usuarios FOR EACH ROW

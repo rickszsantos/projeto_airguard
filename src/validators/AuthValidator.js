@@ -1,5 +1,5 @@
 const validator        = require('validator');
-const { validarSenha } = require('../utils/regrasSenha');
+const { validarSenha } = require('../utils/RegrasSenha');
 const Usuario          = require('../models/Usuario');
  
 function validarCadastro(req, res, next) {

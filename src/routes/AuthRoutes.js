@@ -1,8 +1,8 @@
 const express = require("express");
 const routes = express.Router();
-const AuthController = require("../controllers/authController");
-const validarCadastro  = require('../validators/authValidator');  
-const verificarSessao  = require('../middlewares/verificarSessao'); 
+const AuthController = require("../controllers/AuthController");
+const validarCadastro  = require('../validators/AuthValidator');  
+const verificarSessao  = require('../middlewares/VerificarSessao'); 
 
 
 routes.get("/login", AuthController.showLogin);

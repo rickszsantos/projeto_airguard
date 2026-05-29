@@ -1,9 +1,9 @@
-const sensor = require("../models/Sensor");
+const Leitura = require("../models/Leitura");
 
 // recebe o wss de fora para poder emitir
 let wssRef = null;
 
-class SensorController {
+class LeituraController {
 
 
 
@@ -13,7 +13,7 @@ class SensorController {
 
 
 
-//chamada rota HTTP
+
 receberDados(req, res){
 
     const {temperatura, umidade, CO, gases} = req.body;
@@ -27,7 +27,7 @@ receberDados(req, res){
 
 
 
-    sensor.salvarLeitura(temperatura, umidade, CO, gases);
+    Leitura.salvarLeitura(temperatura, umidade, CO, gases);
 
     //if (wssRef) {
      //       wssRef.clients.forEach((client) => {
@@ -45,7 +45,7 @@ receberDados(req, res){
 
 listarDados(req, res){
 
-    const lista = sensor.listarDados();
+    const lista = Leitura.listarDados();
     res.json(lista);
 
 }
@@ -57,4 +57,4 @@ listarDados(req, res){
 
 
 }
-module.exports = new SensorController();
+module.exports = new LeituraController();

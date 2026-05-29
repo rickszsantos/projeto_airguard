@@ -1,6 +1,6 @@
 const db = require('../config/database');
 
-class Sensor{
+class Leitura{
 
 
     salvarLeitura(temperatura, umidade, CO, gases){
@@ -23,4 +23,4 @@ class Sensor{
 
 }
 
-module.exports = new Sensor();
+module.exports = new Leitura();
