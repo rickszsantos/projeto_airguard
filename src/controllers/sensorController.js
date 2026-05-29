@@ -16,7 +16,7 @@ class SensorController {
 //chamada rota HTTP
 receberDados(req, res){
 
-    const {temperatura, umidade} = req.body;
+    const {temperatura, umidade, CO, gases} = req.body;
 
 
     if(temperatura === undefined || umidade === undefined){
@@ -27,21 +27,13 @@ receberDados(req, res){
 
 
 
-    const leitura = {                  
-        temperatura: parseFloat(temperatura),
-        umidade: parseFloat(umidade),
-        timestamp: new Date().toISOString()
-    }
+    sensor.salvarLeitura(temperatura, umidade, CO, gases);
 
-
-
-    sensor.salvarLeitura(leitura);
-
-    if (wssRef) {
-            wssRef.clients.forEach((client) => {
-                client.send(JSON.stringify(leitura));
-            });
-        }
+    //if (wssRef) {
+     //       wssRef.clients.forEach((client) => {
+     //           client.send(JSON.stringify(leitura));
+     //       });
+     //   }
 
 
     return res.status(201).json({ status: "ok", recebido: leitura });

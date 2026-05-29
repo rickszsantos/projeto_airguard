@@ -39,6 +39,14 @@ function validarCadastro(req, res, next) {
   // Tudo certo — segue para o controller
   next();
 }
+
+
+
+
+
+
+
+
  
 module.exports = validarCadastro;
  

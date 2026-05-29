@@ -1,30 +1,17 @@
-
+const db = require('../config/database');
 
 class Sensor{
 
-    // nome; //mq135, mq 7
-    // tipo; //temperatura, umidade
-    // localizacao;
-    // status; //sensor com defeito ou desativado
-    
-    constructor(){
 
-        this.registros = []
-
-
-    }
-
-
-    salvarLeitura(leitura){
-        
-        //conectar com o banco e 
-        this.registros.push(leitura);
+    salvarLeitura(temperatura, umidade, CO, gases){
+        const stmt = db.prepare('INSERT INTO leituras (temperatura, umidade, CO, gases) VALUES (?, ?, ?, ?)');
+     
 
     }
 
     listarDados(){
 
-        return this.registros;
+
 
     }
 

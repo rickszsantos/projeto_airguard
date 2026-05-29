@@ -72,7 +72,8 @@ class AuthController {
       // Cria a sessão — guarda quem está logado
       req.session.usuarioNome  = usuario.nome;
       req.session.usuarioEmail = usuario.email;
- 
+      req.session.usuarioPerfil = usuario.perfil; 
+      
       return res.redirect('/home');
  
     } catch (erro) {

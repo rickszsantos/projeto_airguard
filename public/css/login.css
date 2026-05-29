@@ -1,7 +1,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   min-height: 100vh;
-  background-image: url('/imagens/cidade.jpeg');
+  background-image: url('/img/cidade.jpeg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
