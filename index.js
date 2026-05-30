@@ -62,11 +62,6 @@ app.use('/api', LeituraRoutes);
  
 
 
-
-
-
-
-
 wss.on('connection', (ws) => {
   console.log('ESP32 conectado!');
  
@@ -90,7 +85,6 @@ wss.on('connection', (ws) => {
   ws.on('close', () => console.log('ESP32 desconectado'));
 });
  
-
 
 
 

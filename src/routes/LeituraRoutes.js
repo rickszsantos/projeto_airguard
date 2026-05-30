@@ -5,7 +5,7 @@ const LeituraController = require("../controllers/LeituraController");
 
 routes.post("/dados", LeituraController.receberDados);
 
-routes.get("/dados", LeituraController.listarDados)
+
 
 
 

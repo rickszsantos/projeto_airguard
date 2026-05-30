@@ -9,7 +9,7 @@ class Usuario {
       INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)
     `);
     const resultado = stmt.run(nome, email, senha);
-    return { id: resultado.lastInsertRowid, nome, email };
+    return { id: resultado.lastInsertRowid,nome, email};
   }
 
 

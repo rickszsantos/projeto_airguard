@@ -8,7 +8,7 @@ class LeituraController {
 
 
     setWss(wss) {
-        wssRef = wss; // guarda a referência do WebSocket
+        wssRef = wss;
     }
 
 
@@ -62,12 +62,6 @@ receberDados(req, res){
 
 
 
-listarDados(req, res){
-
-    const lista = Leitura.listarDados();
-    res.json(lista);
-
-}
 
 
 

@@ -145,17 +145,16 @@
 
         /* ── Chart card ── */
         .chart-card {
-        background: var(--card-bg);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-
-        padding: 16px;      /* diminui espaço interno */
-    
-        width: 1100px;       /* largura */
-        height: 550px;      /* altura */
-
-        display: flex;
-        flex-direction: column;
+         background: var(--card-bg);
+         border-radius: var(--radius);
+         border: 1px solid var(--card-border);
+         box-shadow: var(--shadow);
+         padding: 16px 18px 12px;
+         display: flex;
+         flex-direction: column;
+         flex: 1;          /* cresce para preencher */
+         min-height: 0;    /* essencial: permite shrink dentro do flex */
+         overflow: hidden;
         }
 
         .chart-card h2 {
