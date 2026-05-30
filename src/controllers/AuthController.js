@@ -7,9 +7,18 @@ class AuthController {
   showLogin(req, res)          { return res.render('login', { query: req.query }); }
   showCadastro(req, res)       { return res.render('cadastro'); }
   showRecuperarSenha(req, res) { return res.render('recuperarSenha'); }
-  showHome(req, res)           { return res.render('home'); }
-  showSensores(req, res) { res.render('sensor'); }
 
+
+
+
+
+
+
+
+
+  showHome(req, res)           { return res.render('home', { usuario: req.session.usuarioNome, perfil:  req.session.usuarioPerfil }); }
+  showSensores(req, res) { res.render('sensor',  { usuario: req.session.usuarioNome, perfil:  req.session.usuarioPerfil }); }
+  showHistorico(req, res) { res.render('historico',  { usuario: req.session.usuarioNome, perfil:  req.session.usuarioPerfil }); }
  
 
 
@@ -36,9 +45,7 @@ class AuthController {
     }
   }
  
-showHistorico(req, res) {
-  res.render('historico');
-}
+
 
   
   // ── Login ─────────────────────────────────────────────────────────────────
