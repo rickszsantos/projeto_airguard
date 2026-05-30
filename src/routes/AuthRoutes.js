@@ -24,6 +24,9 @@ routes.post('/logout', AuthController.logout.bind(AuthController));
 
 //protegidas
 routes.get('/home', verificarSessao, AuthController.showHome);
+routes.get('/historico', verificarSessao, AuthController.showHistorico);
+routes.get('/sensores', verificarSessao, AuthController.showSensores);
+
 routes.get('/', (req, res) => res.redirect('/login'));
 
 

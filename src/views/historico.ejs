@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirGuard - Histórico</title>
+     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/historico.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- ── Sidebar ── -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="10" fill="rgba(255,255,255,0.18)"/>
+                <path d="M18 8 L26 12 L26 20 C26 24.4 22.4 28 18 29 C13.6 28 10 24.4 10 20 L10 12 Z" fill="white" opacity="0.9"/>
+                <ellipse cx="18" cy="16" rx="6" ry="4" fill="#2563eb" opacity="0.7"/>
+                <path d="M12 20 Q18 24 24 20" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="sidebar-logo-text">AirGuard</span>
+        </div>
+
+        <a href="/home" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+                <path d="M9 21V12h6v9"/>
+            </svg>
+            Dashboard
+        </a>
+
+        <a href="/historico" class="nav-item active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7v5l3 3"/>
+            </svg>
+            Histórico
+        </a>
+
+        <a href="/sensores" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18M9 21V9"/>
+            </svg>
+            Sensores
+        </a>
+
+        <a href="/configuracoes" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+            Configurações
+        </a>
+    </nav>
+
+    <!-- ── Main ── -->
+    <div class="main">
+
+        <!-- Top header -->
+        <header class="top-header">
+            <h1>AirGuard — Histórico</h1>
+            <div class="header-right">
+                <div class="filter-group">
+                    <label>Período:</label>
+                    <div class="filter-tabs">
+                        <button class="ftab">24h</button>
+                        <button class="ftab active">7d</button>
+                        <button class="ftab">30d</button>
+                        <button class="ftab">90d</button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Poluente:</label>
+                    <select class="fselect">
+                        <option>Todos</option>
+                        <option>CO</option>
+                        <option>CO₂</option>
+                        <option>NH₃</option>
+                    </select>
+                </div>
+                <button class="btn-export">↓ Exportar</button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Cards resumo -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Média do Período</div>
+                    <div class="value-row">
+                        <span class="value" id="media-iqa">--</span>
+                        <span class="unit">IQA</span>
+                    </div>
+                    <div class="stat-badge good">Boa</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Pior Registro</div>
+                    <div class="value-row">
+                        <span class="value" id="pior-iqa">--</span>
+                        <span class="unit">IQA</span>
+                    </div>
+                    <div class="stat-sub" id="pior-data">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Melhor Registro</div>
+                    <div class="value-row">
+                        <span class="value" id="melhor-iqa">--</span>
+                        <span class="unit">IQA</span>
+                    </div>
+                    <div class="stat-sub" id="melhor-data">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Dias Acima do Limite</div>
+                    <div class="value-row">
+                        <span class="value" id="dias-limite">--</span>
+                        <span class="unit">dias</span>
+                    </div>
+                    <div class="stat-sub" id="total-dias">De -- analisados</div>
+                </div>
+            </div>
+
+            <!-- Gráfico -->
+            <div class="chart-card">
+                <h2>Evolução do IQA</h2>
+                <div class="chart-wrap">
+                    <canvas id="graficoHistorico"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabela -->
+            <div class="table-card">
+                <div class="table-header">
+                    <h2>Registros Detalhados</h2>
+                    <span class="records-count" id="total-registros">-- registros</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data / Hora</th>
+                                <th>CO <small>(ppm)</small></th>
+                                <th>CO₂ <small>(ppm)</small></th>
+                                <th>NH₃ <small>(ppm)</small></th>
+                                <th>Temperatura <small>(°C)</small></th>
+                                <th>Umidade <small>(%)</small></th>
+                                <th>Qualidade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo">
+                            <tr>
+                                <td colspan="7" class="loading">Carregando dados...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// ── Configuração da API ──────────────────────────────────
+const API_URL = '/api/leituras/historico'; // ajuste conforme sua rota
+
+// ── Inicializa gráfico ───────────────────────────────────
+const ctx = document.getElementById('graficoHistorico').getContext('2d');
+const grafico = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'IQA',
+            data: [],
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37,99,235,0.08)',
+            borderWidth: 2.5,
+            pointRadius: 4,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#2563eb',
+            pointBorderWidth: 2,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: false,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            x: {
+                ticks: { font: { family: 'Nunito', size: 11 }, color: '#64748b', maxTicksLimit: 10 },
+                grid: { color: 'rgba(37,99,235,0.07)' }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: { font: { family: 'Nunito', size: 11 }, color: '#64748b' },
+                grid: { color: 'rgba(37,99,235,0.07)' }
+            }
+        }
+    }
+});
+
+// ── Helpers ──────────────────────────────────────────────
+function classificarIQA(valor) {
+    if (valor <= 50)  return { label: 'Boa',      classe: 'good' };
+    if (valor <= 100) return { label: 'Moderada', classe: 'moderate' };
+    return                   { label: 'Ruim',     classe: 'bad' };
+}
+
+function formatarData(isoString) {
+    const d = new Date(isoString);
+    return d.toLocaleDateString('pt-br', { day: '2-digit', month: 'short' })
+         + ' — ' + d.toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ── Carrega dados da API ─────────────────────────────────
+async function carregarHistorico() {
+    try {
+        const res = await fetch(API_URL);
+        const json = await res.json();
+
+        // Espera array em json.dados ou direto no array
+        const dados = json.dados ?? json;
+
+        if (!dados || dados.length === 0) {
+            document.getElementById('tabela-corpo').innerHTML =
+                '<tr><td colspan="7" class="loading">Nenhum dado encontrado.</td></tr>';
+            return;
+        }
+
+        // ── Atualiza cards ───────────────────────────────
+        const iqas = dados.map(d => d.iqa ?? 0);
+        const media   = Math.round(iqas.reduce((a,b) => a+b, 0) / iqas.length);
+        const pior    = Math.max(...iqas);
+        const melhor  = Math.min(...iqas);
+        const acima   = iqas.filter(v => v > 100).length;
+
+        document.getElementById('media-iqa').textContent   = media;
+        document.getElementById('pior-iqa').textContent    = pior;
+        document.getElementById('melhor-iqa').textContent  = melhor;
+        document.getElementById('dias-limite').textContent = acima;
+        document.getElementById('total-dias').textContent  = `De ${dados.length} registros`;
+        document.getElementById('total-registros').textContent = `${dados.length} registros`;
+
+        const piorDado   = dados.find(d => (d.iqa ?? 0) === pior);
+        const melhorDado = dados.find(d => (d.iqa ?? 0) === melhor);
+        if (piorDado)   document.getElementById('pior-data').textContent   = formatarData(piorDado.timestamp ?? piorDado.data_hora);
+        if (melhorDado) document.getElementById('melhor-data').textContent = formatarData(melhorDado.timestamp ?? melhorDado.data_hora);
+
+        // ── Atualiza gráfico ─────────────────────────────
+        grafico.data.labels = dados.map(d => formatarData(d.timestamp ?? d.data_hora));
+        grafico.data.datasets[0].data = iqas;
+        grafico.update();
+
+        // ── Atualiza tabela ──────────────────────────────
+        const tbody = document.getElementById('tabela-corpo');
+        tbody.innerHTML = dados.map(d => {
+            const q = classificarIQA(d.iqa ?? 0);
+            return `
+            <tr>
+                <td class="td-date">${formatarData(d.timestamp ?? d.data_hora)}</td>
+                <td>${d.co   ?? '--'}</td>
+                <td>${d.co2  ?? '--'}</td>
+                <td>${d.nh3  ?? '--'}</td>
+                <td>${d.temperatura ?? '--'}</td>
+                <td>${d.umidade ?? '--'}</td>
+                <td><span class="badge ${q.classe}">${q.label}</span></td>
+            </tr>`;
+        }).join('');
+
+    } catch (erro) {
+        console.error('Erro ao carregar histórico:', erro);
+        document.getElementById('tabela-corpo').innerHTML =
+            '<tr><td colspan="7" class="loading">Erro ao carregar dados. Verifique a API.</td></tr>';
+    }
+}
+
+carregarHistorico();
+
+// ── Filtros de período ───────────────────────────────────
+document.querySelectorAll('.ftab').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        carregarHistorico(); // futuramente passar o período como parâmetro
+    });
+});
+</script>
+
+</body>
+</html>

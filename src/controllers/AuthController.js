@@ -8,6 +8,8 @@ class AuthController {
   showCadastro(req, res)       { return res.render('cadastro'); }
   showRecuperarSenha(req, res) { return res.render('recuperarSenha'); }
   showHome(req, res)           { return res.render('home'); }
+  showSensores(req, res) { res.render('sensor'); }
+
  
 
 
@@ -34,13 +36,9 @@ class AuthController {
     }
   }
  
-
-
-
-
-
-
-
+showHistorico(req, res) {
+  res.render('historico');
+}
 
   
   // ── Login ─────────────────────────────────────────────────────────────────
@@ -90,3 +88,4 @@ class AuthController {
 }
  
 module.exports = new AuthController();
+

@@ -238,3 +238,13 @@
             justify-content: center;
             flex-shrink: 0;
         }
+         a.nav-item {
+            text-decoration: none;
+            color: rgba(255,255,255,0.75);
+        }
+
+        a.nav-item:hover { color: #fff; }
+
+        a.nav-item.active { color: #fff; }
+
+    

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirGuard - Sensores</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/sensor.css">
+</head>
+<body>
+
+<div class="layout">
+
+    <!-- ── Sidebar ── -->
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="10" fill="rgba(255,255,255,0.18)"/>
+                <path d="M18 8 L26 12 L26 20 C26 24.4 22.4 28 18 29 C13.6 28 10 24.4 10 20 L10 12 Z" fill="white" opacity="0.9"/>
+                <ellipse cx="18" cy="16" rx="6" ry="4" fill="#2563eb" opacity="0.7"/>
+                <path d="M12 20 Q18 24 24 20" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="sidebar-logo-text">AirGuard</span>
+        </div>
+
+        <a href="/home" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+                <path d="M9 21V12h6v9"/>
+            </svg>
+            Dashboard
+        </a>
+
+        <a href="/historico" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 7v5l3 3"/>
+            </svg>
+            Histórico
+        </a>
+
+        <a href="/sensores" class="nav-item active">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18M9 21V9"/>
+            </svg>
+            Sensores
+        </a>
+
+        <a href="/configuracoes" class="nav-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+            Configurações
+        </a>
+
+        <div class="sidebar-footer">
+            <div class="footer-status">
+                <span class="dot-green"></span>
+                <span>Sistema Online</span>
+            </div>
+            <div class="footer-quality">
+                Qualidade do Ar: <strong>Boa</strong>
+                <span class="check-circle">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Main ── -->
+    <div class="main">
+
+        <!-- Top header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1>AirGuard — Monitoramento</h1>
+            </div>
+            <div class="header-right">
+                <div class="notif-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                    </svg>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <span>Admin</span>
+                    <span class="user-badge">ADM</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content">
+
+            <!-- Page title + busca -->
+            <div class="page-top">
+                <div>
+                    <h2 class="page-title">Sensores</h2>
+                    <p class="page-sub">Gerencie suas estações e sensores</p>
+                </div>
+                <div class="page-actions">
+                    <div class="search-box">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input type="text" placeholder="Buscar estação..." id="busca-input"/>
+                    </div>
+                    <button class="btn-nova">+ Nova Estação</button>
+                </div>
+            </div>
+
+            <!-- Cards resumo -->
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-icon icon-blue">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                            <line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="summary-label">Estações Ativas</div>
+                        <div class="summary-value" id="estacoes-ativas">--</div>
+                        <div class="summary-sub" id="estacoes-total">de -- estações</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon icon-green">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="summary-label">Sensores Ativos</div>
+                        <div class="summary-value" id="sensores-ativos">--</div>
+                        <div class="summary-sub" id="sensores-total">de -- sensores</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon icon-orange">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="summary-label">Leituras Hoje</div>
+                        <div class="summary-value" id="leituras-hoje">--</div>
+                        <div class="summary-sub">Total de leituras</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon icon-purple">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="summary-label">Status da Rede</div>
+                        <div class="summary-value green-text">Bom</div>
+                        <div class="summary-sub">Todos conectados</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de estações -->
+            <div class="estacoes-lista" id="estacoes-lista">
+                <div class="loading-msg">Carregando estações...</div>
+            </div>
+
+            <!-- Paginação -->
+            <div class="paginacao">
+                <button class="page-btn" disabled>Anterior</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn" disabled>Próxima</button>
+                <span class="page-info" id="page-info">Mostrando 1 a 0 de 0 estações</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+const API_ESTACOES = '/api/estacoes';
+
+// ── Renderiza status badge ───────────────────────────────
+function statusBadge(status) {
+    const map = {
+        'ativa':      { label: 'Ativa',      cls: 'badge-ativa' },
+        'inativa':    { label: 'Inativa',     cls: 'badge-inativa' },
+        'manutencao': { label: 'Manutenção',  cls: 'badge-manutencao' },
+    };
+    const s = map[status?.toLowerCase()] ?? { label: status, cls: 'badge-inativa' };
+    return `<span class="status-badge ${s.cls}">${s.label}</span>`;
+}
+
+function sensorStatusDot(status) {
+    const ativo = status?.toLowerCase() === 'ativo';
+    return `<span class="sensor-dot ${ativo ? 'dot-ativo' : 'dot-inativo'}"></span>
+            <span class="${ativo ? 'text-ativo' : 'text-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>`;
+}
+
+function botoeEstacao(status) {
+    const ativa = status?.toLowerCase() === 'ativa';
+    return `
+        <button class="btn-acao btn-editar">✏ Editar</button>
+        <button class="btn-acao btn-configurar">⚙ Configurar</button>
+        ${ativa
+            ? `<button class="btn-acao btn-desativar">⏻ Desativar</button>`
+            : `<button class="btn-acao btn-ativar">⏻ Ativar</button>`}
+    `;
+}
+
+function iconEstacao(tipo) {
+    const icons = {
+        'centro':     '#2563eb',
+        'industrial': '#f59e0b',
+        'parque':     '#22c55e',
+        'norte':      '#94a3b8',
+    };
+    const cor = icons[tipo?.toLowerCase()] ?? '#2563eb';
+    return `<div class="estacao-icon" style="background:${cor}22; border: 2px solid ${cor}44">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${cor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+        </svg>
+    </div>`;
+}
+
+// ── Renderiza lista de estações ──────────────────────────
+function renderEstacoes(estacoes) {
+    const lista = document.getElementById('estacoes-lista');
+    if (!estacoes || estacoes.length === 0) {
+        lista.innerHTML = '<div class="loading-msg">Nenhuma estação encontrada.</div>';
+        return;
+    }
+
+    lista.innerHTML = estacoes.map(est => `
+        <div class="estacao-card">
+            <div class="estacao-esq">
+                ${iconEstacao(est.nome)}
+                <div class="estacao-info">
+                    <div class="estacao-nome-row">
+                        <strong>${est.nome}</strong>
+                        ${statusBadge(est.status)}
+                    </div>
+                    <div class="estacao-meta">ID: ${est.id ?? '--'}</div>
+                    <div class="estacao-meta">📍 ${est.latitude ?? '--'}, ${est.longitude ?? '--'}</div>
+                    <div class="estacao-meta">Intervalo de leitura: ${est.intervalo ?? '5'} segundos</div>
+                    <div class="estacao-meta">Última leitura: <span class="ultima-leitura">${est.ultima_leitura ?? '--'}</span></div>
+                </div>
+            </div>
+            <div class="estacao-dir">
+                <div class="sensores-lista-inline">
+                    <div class="sensores-header">Sensores</div>
+                    ${(est.sensores ?? [
+                        { nome: 'DHT22 (Temperatura e Umidade)', status: est.status === 'ativa' ? 'ativo' : 'inativo', hora: est.ultima_leitura?.split(' ')[1] ?? '-' },
+                        { nome: 'MQ7 (Monóxido de Carbono)',     status: est.status === 'ativa' ? 'ativo' : 'inativo', hora: est.ultima_leitura?.split(' ')[1] ?? '-' },
+                        { nome: 'MQ135 (Qualidade do Ar)',       status: est.status === 'ativa' ? 'ativo' : 'inativo', hora: est.ultima_leitura?.split(' ')[1] ?? '-' },
+                    ]).map(s => `
+                        <div class="sensor-row">
+                            <span class="sensor-nome">${s.nome}</span>
+                            <span class="sensor-status">${sensorStatusDot(s.status)}</span>
+                            <span class="sensor-hora">${s.hora ?? '-'}</span>
+                            <span class="sensor-arrow">›</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="estacao-botoes">
+                    ${botoeEstacao(est.status)}
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    document.getElementById('page-info').textContent =
+        `Mostrando 1 a ${estacoes.length} de ${estacoes.length} estações`;
+}
+
+// ── Carrega dados ────────────────────────────────────────
+async function carregarSensores() {
+    try {
+        const res  = await fetch(API_ESTACOES);
+        const json = await res.json();
+        const estacoes = json.estacoes ?? json;
+
+        const ativas   = estacoes.filter(e => e.status?.toLowerCase() === 'ativa').length;
+        const sensAtivos = ativas * 3;
+        const totalSens  = estacoes.length * 3;
+
+        document.getElementById('estacoes-ativas').textContent = ativas;
+        document.getElementById('estacoes-total').textContent  = `de ${estacoes.length} estações`;
+        document.getElementById('sensores-ativos').textContent = sensAtivos;
+        document.getElementById('sensores-total').textContent  = `de ${totalSens} sensores`;
+        document.getElementById('leituras-hoje').textContent   = json.leituras_hoje ?? '--';
+
+        renderEstacoes(estacoes);
+
+    } catch (err) {
+        console.error('Erro ao carregar sensores:', err);
+        document.getElementById('estacoes-lista').innerHTML =
+            '<div class="loading-msg">Erro ao carregar dados. Verifique a API.</div>';
+    }
+}
+
+carregarSensores();
+
+// ── Busca ────────────────────────────────────────────────
+document.getElementById('busca-input').addEventListener('input', function() {
+    const termo = this.value.toLowerCase();
+    document.querySelectorAll('.estacao-card').forEach(card => {
+        const nome = card.querySelector('.estacao-nome-row strong')?.textContent.toLowerCase() ?? '';
+        card.style.display = nome.includes(termo) ? '' : 'none';
+    });
+});
+</script>
+
+</body>
+</html>
