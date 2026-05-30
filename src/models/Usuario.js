@@ -33,12 +33,7 @@ class Usuario {
 
 
 
-  // Lista todos (útil para debug)
-  listarTodos() {
-    const stmt = db.prepare('SELECT id, nome, email, status, data_criacao FROM usuarios');
-    return stmt.all();
-  }
-
+  
     
 }
 module.exports = new Usuario();

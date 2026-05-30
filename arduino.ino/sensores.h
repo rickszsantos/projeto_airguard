@@ -2,9 +2,9 @@
 #define SENSORES_H
 #include <DHT.h>
 
-#define PINO_DHT    2   // DHT22 — temperatura e umidade
-#define PINO_MQ135  22  // MQ135 — qualidade do ar geral
-#define PINO_MQ7    5  // MQ7   — monóxido de carbono (CO)
+#define PINO_DHT    4   // DHT22 — temperatura e umidade
+#define PINO_MQ135  32  // MQ135 — qualidade do ar geral
+#define PINO_MQ7    33  // MQ7   — monóxido de carbono (CO)
 #define TIPO_DHT    DHT22
 
 DHT dht(PINO_DHT, TIPO_DHT);
@@ -13,10 +13,8 @@ void iniciarSensores() {
     dht.begin();
 }
 
-
-
 float lerTemperatura() {
-    float temp = dht.readTemperature(); // lê em Celsius
+    float temp = dht.readTemperature();
 
     if (isnan(temp)) {
         Serial.println("Erro ao ler temperatura do DHT22!");
@@ -27,7 +25,7 @@ float lerTemperatura() {
 }
 
 float lerUmidade() {
-    float umidade = dht.readHumidity(); // mesmo sensor DHT22
+    float umidade = dht.readHumidity();
 
     if (isnan(umidade)) {
         Serial.println("Erro ao ler umidade do DHT22!");
@@ -36,8 +34,6 @@ float lerUmidade() {
 
     return umidade;
 }
-
-
 
 float lerMonoxidoCarbono() {
     int leitura = analogRead(PINO_MQ7);
@@ -49,8 +45,6 @@ float lerMonoxidoCarbono() {
     return ppm;
 }
 
-
-
 float lerMQ135() {
     int leitura = analogRead(PINO_MQ135);
 
@@ -60,6 +54,5 @@ float lerMQ135() {
     float ppm = map(leitura, 0, 4095, 0, 1000);
     return ppm;
 }
-
 
 #endif

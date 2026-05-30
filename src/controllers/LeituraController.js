@@ -16,12 +16,27 @@ class LeituraController {
 
 receberDados(req, res){
 
-    const {temperatura, umidade, CO, gases} = req.body;
+    const {temperatura, umidade, gases, CO} = req.body;
 
 
-    if(temperatura === undefined || umidade === undefined){
+    if(temperatura === undefined ){
 
-          return res.status(400).json({   erro: "Sem leitura" });
+          return res.status(400).json({   erro: "Sem leitura, temperatura" });
+
+    }
+    if(umidade === undefined ){
+
+          return res.status(400).json({   erro: "Sem leitura, umidade" });
+
+    }
+    if(CO === undefined ){
+
+          return res.status(400).json({   erro: "Sem leitura, CO" });
+
+    }
+    if(gases === undefined){
+
+          return res.status(400).json({   erro: "Sem leitura, gases" });
 
     }
 
@@ -29,14 +44,18 @@ receberDados(req, res){
 
     Leitura.salvarLeitura(temperatura, umidade, CO, gases);
 
-    //if (wssRef) {
-     //       wssRef.clients.forEach((client) => {
-     //           client.send(JSON.stringify(leitura));
-     //       });
-     //   }
+    
 
+        if (wssRef) {
+          const payload = JSON.stringify({ temperatura, umidade, CO, gases });
+            wssRef.clients.forEach(client => {
+            if (client.readyState === 1) { // 1 = OPEN
+                client.send(payload);
+            }
+         });
+        }
 
-    return res.status(201).json({ status: "ok", recebido: leitura });
+    return res.status(201).json({ status: "ok", recebido: { temperatura, umidade, CO, gases } });
 }
 
 

@@ -19,10 +19,10 @@ class AuthController {
       const { nome, email, senha } = req.body;
  
       // Gera o hash da senha antes de salvar
-      // O "10" é o número de rounds — quanto maior, mais seguro e mais lento
+      // O "10" é o número de rounds 
       const senhaHash = await bcrypt.hash(senha, 10);
  
-      // Salva no array (futuramente: no banco de dados)
+      // Salva no banco de dados
       Usuario.salvarUser(nome, email, senhaHash);
  
       // Redireciona para o login com mensagem de sucesso
@@ -60,8 +60,6 @@ class AuthController {
         return res.render('login', { erro: 'Email ou senha inválidos.' });
       }
  
-
-      
       // Compara a senha digitada com o hash salvo
       // bcrypt.compare faz isso de forma segura
       const senhaCorreta = await bcrypt.compare(senha, usuario.senha);

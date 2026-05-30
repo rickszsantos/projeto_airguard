@@ -13,7 +13,7 @@ if (!fs.existsSync(dbPath)) {
   db.exec(sql);
   console.log('Banco criado com sucesso!');
 }
-
+//--
 
 require('dotenv').config();
  
@@ -81,7 +81,7 @@ wss.on('connection', (ws) => {
         json: (data) => console.log('resposta:', data)
       };
  
-      sensorController.receberDados(req, res);
+      LeituraController.receberDados(req, res);
     } catch (e) {
       console.error('Mensagem inválida do ESP32:', e.message);
     }
