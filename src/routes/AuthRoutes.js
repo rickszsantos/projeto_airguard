@@ -11,6 +11,7 @@ routes.get("/cadastro", AuthController.showCadastro);
 
 routes.get("/recuperar-senha", AuthController.showRecuperarSenha);
 
+routes.get('/configuracoes', verificarSessao, AuthController.showConfiguracoes);
 
 
 

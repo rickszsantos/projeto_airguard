@@ -274,7 +274,7 @@ html, body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    height: 240px;
+    height: 420px;
 }
 
 .chart-card h2 {
@@ -286,7 +286,7 @@ html, body {
 
 .chart-wrap {
     flex: 1;
-    min-height: 0;
+    min-height: 350px;
     position: relative;
 }
 
@@ -470,7 +470,7 @@ td {
 }
 
 .chart-card {
-    height: 280px !important;
+    height: 550px !important;
     border-radius: 10px;
     padding: 0 !important;
     overflow: hidden;

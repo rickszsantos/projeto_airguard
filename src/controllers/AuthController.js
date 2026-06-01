@@ -19,7 +19,7 @@ class AuthController {
   showHome(req, res)           { return res.render('home', { usuario: req.session.usuarioNome, perfil:  req.session.usuarioPerfil }); }
   showSensores(req, res) { res.render('sensor',  { usuario: req.session.usuarioNome, perfil:  req.session.usuarioPerfil }); }
   showHistorico(req, res) { res.render('historico',  { usuario: req.session.usuarioNome, perfil:  req.session.usuarioPerfil }); }
- 
+  showConfiguracoes(req, res) { res.render('configuracao'); }
 
 
 

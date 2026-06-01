@@ -74,7 +74,6 @@
     <!-- ── Main ── -->
     <div class="main">
 
-        <!-- Top header -->
         <header class="top-header">
             <div class="header-left">
                 <h1>AirGuard — Monitoramento</h1>
@@ -100,7 +99,6 @@
             </div>
         </header>
 
-        <!-- Content -->
         <div class="content">
 
             <!-- Page title + busca -->
@@ -138,7 +136,7 @@
                 <div class="summary-card">
                     <div class="summary-icon icon-green">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/>
+                            <path d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1114 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2"/>
                         </svg>
                     </div>
                     <div>
@@ -186,74 +184,105 @@
                 <span class="page-info" id="page-info">Mostrando 1 a 0 de 0 estações</span>
             </div>
 
+            <!-- ── Configurar Alertas ── -->
+            <div class="table-card" style="margin-top:4px;">
+                <div class="table-header">
+                    <h2>Configurar Alertas</h2>
+                    <button class="btn-nova" onclick="document.getElementById('form-alerta').style.display='block'">+ Novo Alerta</button>
+                </div>
+
+                <!-- Formulário -->
+                <div id="form-alerta" style="display:none; padding:16px 0 8px; border-bottom:1px solid #e2e8f0; margin-bottom:12px;">
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:130px;">
+                            <label style="font-size:11px; font-weight:800; color:#2563eb; text-transform:uppercase;">Sensor</label>
+                            <select id="al-sensor" style="border:1px solid #e2e8f0; border-radius:8px; padding:7px 10px; font-family:Nunito,sans-serif; font-size:13px; font-weight:600; outline:none;">
+                                <option value="temperatura">Temperatura (°C)</option>
+                                <option value="umidade">Umidade (%)</option>
+                                <option value="gases">Gases MQ135 (ppm)</option>
+                                <option value="CO">CO MQ7 (ppm)</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:130px;">
+                            <label style="font-size:11px; font-weight:800; color:#2563eb; text-transform:uppercase;">Condição</label>
+                            <select id="al-cond" style="border:1px solid #e2e8f0; border-radius:8px; padding:7px 10px; font-family:Nunito,sans-serif; font-size:13px; font-weight:600; outline:none;">
+                                <option value="maior">Maior que (&gt;)</option>
+                                <option value="menor">Menor que (&lt;)</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:100px;">
+                            <label style="font-size:11px; font-weight:800; color:#2563eb; text-transform:uppercase;">Valor</label>
+                            <input id="al-valor" type="number" placeholder="ex: 400" style="border:1px solid #e2e8f0; border-radius:8px; padding:7px 10px; font-family:Nunito,sans-serif; font-size:13px; font-weight:600; outline:none;"/>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:130px;">
+                            <label style="font-size:11px; font-weight:800; color:#2563eb; text-transform:uppercase;">Severidade</label>
+                            <select id="al-sev" style="border:1px solid #e2e8f0; border-radius:8px; padding:7px 10px; font-family:Nunito,sans-serif; font-size:13px; font-weight:600; outline:none;">
+                                <option value="aviso">⚠ Aviso</option>
+                                <option value="critico">🔴 Crítico</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:4px; flex:2; min-width:160px;">
+                            <label style="font-size:11px; font-weight:800; color:#2563eb; text-transform:uppercase;">Descrição</label>
+                            <input id="al-desc" type="text" placeholder="ex: CO acima do limite" style="border:1px solid #e2e8f0; border-radius:8px; padding:7px 10px; font-family:Nunito,sans-serif; font-size:13px; font-weight:600; outline:none;"/>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px; justify-content:flex-end;">
+                        <button onclick="document.getElementById('form-alerta').style.display='none'" style="background:#fff; border:1px solid #e2e8f0; color:#64748b; font-family:Nunito,sans-serif; font-size:13px; font-weight:700; padding:7px 16px; border-radius:8px; cursor:pointer;">Cancelar</button>
+                        <button onclick="salvarAlerta()" style="background:#2563eb; border:none; color:#fff; font-family:Nunito,sans-serif; font-size:13px; font-weight:800; padding:7px 18px; border-radius:8px; cursor:pointer;">Salvar</button>
+                    </div>
+                </div>
+
+                <!-- Lista de alertas -->
+                <div id="alertas-lista">
+                    <div style="text-align:center; color:#94a3b8; font-size:13px; font-weight:600; padding:16px;">Nenhum alerta configurado.</div>
+                </div>
+
+                <!-- Alertas disparados -->
+                <div id="alertas-disparados" style="display:none; margin-top:12px; border-top:1px solid #e2e8f0; padding-top:12px;">
+                    <div style="font-size:13px; font-weight:800; color:#1e3a5f; margin-bottom:8px;">🔔 Alertas Disparados</div>
+                    <div id="lista-disparados"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <script>
+// ── Estações ─────────────────────────────────────────────
 const API_ESTACOES = '/api/estacoes';
 
-// ── Renderiza status badge ───────────────────────────────
 function statusBadge(status) {
-    const map = {
-        'ativa':      { label: 'Ativa',      cls: 'badge-ativa' },
-        'inativa':    { label: 'Inativa',     cls: 'badge-inativa' },
-        'manutencao': { label: 'Manutenção',  cls: 'badge-manutencao' },
-    };
+    const map = { 'ativa': { label:'Ativa', cls:'badge-ativa' }, 'inativa': { label:'Inativa', cls:'badge-inativa' }, 'manutencao': { label:'Manutenção', cls:'badge-manutencao' } };
     const s = map[status?.toLowerCase()] ?? { label: status, cls: 'badge-inativa' };
     return `<span class="status-badge ${s.cls}">${s.label}</span>`;
 }
 
 function sensorStatusDot(status) {
     const ativo = status?.toLowerCase() === 'ativo';
-    return `<span class="sensor-dot ${ativo ? 'dot-ativo' : 'dot-inativo'}"></span>
-            <span class="${ativo ? 'text-ativo' : 'text-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>`;
+    return `<span class="sensor-dot ${ativo ? 'dot-ativo' : 'dot-inativo'}"></span><span class="${ativo ? 'text-ativo' : 'text-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>`;
 }
 
 function botoeEstacao(status) {
     const ativa = status?.toLowerCase() === 'ativa';
-    return `
-        <button class="btn-acao btn-editar">✏ Editar</button>
-        <button class="btn-acao btn-configurar">⚙ Configurar</button>
-        ${ativa
-            ? `<button class="btn-acao btn-desativar">⏻ Desativar</button>`
-            : `<button class="btn-acao btn-ativar">⏻ Ativar</button>`}
-    `;
+    return `<button class="btn-acao btn-editar">✏ Editar</button><button class="btn-acao btn-configurar">⚙ Configurar</button>${ativa ? `<button class="btn-acao btn-desativar">⏻ Desativar</button>` : `<button class="btn-acao btn-ativar">⏻ Ativar</button>`}`;
 }
 
 function iconEstacao(tipo) {
-    const icons = {
-        'centro':     '#2563eb',
-        'industrial': '#f59e0b',
-        'parque':     '#22c55e',
-        'norte':      '#94a3b8',
-    };
+    const icons = { 'centro':'#2563eb', 'industrial':'#f59e0b', 'parque':'#22c55e', 'norte':'#94a3b8' };
     const cor = icons[tipo?.toLowerCase()] ?? '#2563eb';
-    return `<div class="estacao-icon" style="background:${cor}22; border: 2px solid ${cor}44">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${cor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="7" width="20" height="14" rx="2"/>
-            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
-        </svg>
-    </div>`;
+    return `<div class="estacao-icon" style="background:${cor}22; border:2px solid ${cor}44"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${cor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>`;
 }
 
-// ── Renderiza lista de estações ──────────────────────────
 function renderEstacoes(estacoes) {
     const lista = document.getElementById('estacoes-lista');
-    if (!estacoes || estacoes.length === 0) {
-        lista.innerHTML = '<div class="loading-msg">Nenhuma estação encontrada.</div>';
-        return;
-    }
-
+    if (!estacoes || estacoes.length === 0) { lista.innerHTML = '<div class="loading-msg">Nenhuma estação encontrada.</div>'; return; }
     lista.innerHTML = estacoes.map(est => `
         <div class="estacao-card">
             <div class="estacao-esq">
                 ${iconEstacao(est.nome)}
                 <div class="estacao-info">
-                    <div class="estacao-nome-row">
-                        <strong>${est.nome}</strong>
-                        ${statusBadge(est.status)}
-                    </div>
+                    <div class="estacao-nome-row"><strong>${est.nome}</strong>${statusBadge(est.status)}</div>
                     <div class="estacao-meta">ID: ${est.id ?? '--'}</div>
                     <div class="estacao-meta">📍 ${est.latitude ?? '--'}, ${est.longitude ?? '--'}</div>
                     <div class="estacao-meta">Intervalo de leitura: ${est.intervalo ?? '5'} segundos</div>
@@ -264,58 +293,36 @@ function renderEstacoes(estacoes) {
                 <div class="sensores-lista-inline">
                     <div class="sensores-header">Sensores</div>
                     ${(est.sensores ?? [
-                        { nome: 'DHT22 (Temperatura e Umidade)', status: est.status === 'ativa' ? 'ativo' : 'inativo', hora: est.ultima_leitura?.split(' ')[1] ?? '-' },
-                        { nome: 'MQ7 (Monóxido de Carbono)',     status: est.status === 'ativa' ? 'ativo' : 'inativo', hora: est.ultima_leitura?.split(' ')[1] ?? '-' },
-                        { nome: 'MQ135 (Qualidade do Ar)',       status: est.status === 'ativa' ? 'ativo' : 'inativo', hora: est.ultima_leitura?.split(' ')[1] ?? '-' },
-                    ]).map(s => `
-                        <div class="sensor-row">
-                            <span class="sensor-nome">${s.nome}</span>
-                            <span class="sensor-status">${sensorStatusDot(s.status)}</span>
-                            <span class="sensor-hora">${s.hora ?? '-'}</span>
-                            <span class="sensor-arrow">›</span>
-                        </div>
-                    `).join('')}
+                        { nome:'DHT22 (Temperatura e Umidade)', status: est.status==='ativa'?'ativo':'inativo', hora: est.ultima_leitura?.split(' ')[1]??'-' },
+                        { nome:'MQ7 (Monóxido de Carbono)',     status: est.status==='ativa'?'ativo':'inativo', hora: est.ultima_leitura?.split(' ')[1]??'-' },
+                        { nome:'MQ135 (Qualidade do Ar)',       status: est.status==='ativa'?'ativo':'inativo', hora: est.ultima_leitura?.split(' ')[1]??'-' },
+                    ]).map(s => `<div class="sensor-row"><span class="sensor-nome">${s.nome}</span><span class="sensor-status">${sensorStatusDot(s.status)}</span><span class="sensor-hora">${s.hora??'-'}</span><span class="sensor-arrow">›</span></div>`).join('')}
                 </div>
-                <div class="estacao-botoes">
-                    ${botoeEstacao(est.status)}
-                </div>
+                <div class="estacao-botoes">${botoeEstacao(est.status)}</div>
             </div>
-        </div>
-    `).join('');
-
-    document.getElementById('page-info').textContent =
-        `Mostrando 1 a ${estacoes.length} de ${estacoes.length} estações`;
+        </div>`).join('');
+    document.getElementById('page-info').textContent = `Mostrando 1 a ${estacoes.length} de ${estacoes.length} estações`;
 }
 
-// ── Carrega dados ────────────────────────────────────────
 async function carregarSensores() {
     try {
-        const res  = await fetch(API_ESTACOES);
+        const res = await fetch(API_ESTACOES);
         const json = await res.json();
         const estacoes = json.estacoes ?? json;
-
-        const ativas   = estacoes.filter(e => e.status?.toLowerCase() === 'ativa').length;
-        const sensAtivos = ativas * 3;
-        const totalSens  = estacoes.length * 3;
-
+        const ativas = estacoes.filter(e => e.status?.toLowerCase() === 'ativa').length;
         document.getElementById('estacoes-ativas').textContent = ativas;
         document.getElementById('estacoes-total').textContent  = `de ${estacoes.length} estações`;
-        document.getElementById('sensores-ativos').textContent = sensAtivos;
-        document.getElementById('sensores-total').textContent  = `de ${totalSens} sensores`;
+        document.getElementById('sensores-ativos').textContent = ativas * 3;
+        document.getElementById('sensores-total').textContent  = `de ${estacoes.length * 3} sensores`;
         document.getElementById('leituras-hoje').textContent   = json.leituras_hoje ?? '--';
-
         renderEstacoes(estacoes);
-
     } catch (err) {
-        console.error('Erro ao carregar sensores:', err);
-        document.getElementById('estacoes-lista').innerHTML =
-            '<div class="loading-msg">Erro ao carregar dados. Verifique a API.</div>';
+        document.getElementById('estacoes-lista').innerHTML = '<div class="loading-msg">Erro ao carregar dados. Verifique a API.</div>';
     }
 }
 
 carregarSensores();
 
-// ── Busca ────────────────────────────────────────────────
 document.getElementById('busca-input').addEventListener('input', function() {
     const termo = this.value.toLowerCase();
     document.querySelectorAll('.estacao-card').forEach(card => {
@@ -323,6 +330,50 @@ document.getElementById('busca-input').addEventListener('input', function() {
         card.style.display = nome.includes(termo) ? '' : 'none';
     });
 });
+
+// ── Alertas ──────────────────────────────────────────────
+let alertas = JSON.parse(localStorage.getItem('airguard_alertas') || '[]');
+const SNOME = { temperatura:'Temperatura', umidade:'Umidade', gases:'Gases MQ135', CO:'CO MQ7' };
+const COND  = { maior:'>', menor:'<' };
+
+function renderAlertas() {
+    const lista = document.getElementById('alertas-lista');
+    if (alertas.length === 0) {
+        lista.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:13px; font-weight:600; padding:16px;">Nenhum alerta configurado.</div>';
+        return;
+    }
+    lista.innerHTML = alertas.map((a, i) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:10px; margin-bottom:8px; background:${a.severidade==='critico'?'#fff5f5':'#fffbeb'}; border-left:4px solid ${a.severidade==='critico'?'#ef4444':'#f59e0b'};">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:18px;">${a.severidade==='critico'?'🔴':'⚠️'}</span>
+                <div>
+                    <div style="font-size:13px; font-weight:800; color:#1e3a5f;">${a.desc || SNOME[a.sensor]}</div>
+                    <div style="font-size:12px; color:#64748b; font-weight:600;">${SNOME[a.sensor]} ${COND[a.cond]} ${a.valor} — <span style="color:${a.severidade==='critico'?'#dc2626':'#b45309'}">${a.severidade==='critico'?'Crítico':'Aviso'}</span></div>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; font-weight:700; color:${a.ativo?'#16a34a':'#94a3b8'}">${a.ativo?'● Ativo':'○ Inativo'}</span>
+                <button onclick="toggleAlerta(${i})" style="background:#fff; border:1px solid #e2e8f0; color:#64748b; font-family:Nunito,sans-serif; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer;">${a.ativo?'Desativar':'Ativar'}</button>
+                <button onclick="removerAlerta(${i})" style="background:#fff; border:1px solid #fee2e2; color:#ef4444; font-family:Nunito,sans-serif; font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px; cursor:pointer;">✕</button>
+            </div>
+        </div>`).join('');
+}
+
+function salvarAlerta() {
+    const valor = parseFloat(document.getElementById('al-valor').value);
+    if (isNaN(valor)) { alert('Informe um valor numérico.'); return; }
+    alertas.push({ sensor: document.getElementById('al-sensor').value, cond: document.getElementById('al-cond').value, valor, severidade: document.getElementById('al-sev').value, desc: document.getElementById('al-desc').value.trim(), ativo: true });
+    localStorage.setItem('airguard_alertas', JSON.stringify(alertas));
+    renderAlertas();
+    document.getElementById('form-alerta').style.display = 'none';
+    document.getElementById('al-valor').value = '';
+    document.getElementById('al-desc').value  = '';
+}
+
+function removerAlerta(i) { alertas.splice(i,1); localStorage.setItem('airguard_alertas', JSON.stringify(alertas)); renderAlertas(); }
+function toggleAlerta(i)  { alertas[i].ativo = !alertas[i].ativo; localStorage.setItem('airguard_alertas', JSON.stringify(alertas)); renderAlertas(); }
+
+renderAlertas();
 </script>
 
 </body>
