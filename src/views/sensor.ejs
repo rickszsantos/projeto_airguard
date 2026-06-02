@@ -92,8 +92,8 @@
                             <circle cx="12" cy="7" r="4"/>
                         </svg>
                     </div>
-                    <span>Admin</span>
-                    <span class="user-badge">ADM</span>
+                    <span><%= typeof usuario !== "undefined" ? usuario : "Usuário" %></span>
+                    <span class="user-badge"><%= typeof perfil !== "undefined" ? perfil.toUpperCase().substring(0,3) : "USR" %></span>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
             </div>
@@ -263,9 +263,14 @@ function sensorStatusDot(status) {
     return `<span class="sensor-dot ${ativo ? 'dot-ativo' : 'dot-inativo'}"></span><span class="${ativo ? 'text-ativo' : 'text-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>`;
 }
 
-function botoeEstacao(status) {
-    const ativa = status?.toLowerCase() === 'ativa';
-    return `<button class="btn-acao btn-editar">✏ Editar</button><button class="btn-acao btn-configurar">⚙ Configurar</button>${ativa ? `<button class="btn-acao btn-desativar">⏻ Desativar</button>` : `<button class="btn-acao btn-ativar">⏻ Ativar</button>`}`;
+function botoeEstacao(id, status) {
+    const ativa = (status || '').toLowerCase() === 'ativa';
+    const btnToggle = ativa
+        ? '<button class="btn-acao btn-desativar" onclick="alterarStatus(' + id + ',\'inativa\',this)">⏻ Desativar</button>'
+        : '<button class="btn-acao btn-ativar"    onclick="alterarStatus(' + id + ',\'ativa\',this)">⏻ Ativar</button>';
+    return '<button class="btn-acao btn-editar"      onclick="editarEstacao(' + id + ')">✏ Editar</button>'
+         + '<button class="btn-acao btn-configurar"  onclick="location.href=\'/configuracoes?estacao_id=' + id + '\'">⚙ Configurar</button>'
+         + btnToggle;
 }
 
 function iconEstacao(tipo) {
@@ -285,20 +290,23 @@ function renderEstacoes(estacoes) {
                     <div class="estacao-nome-row"><strong>${est.nome}</strong>${statusBadge(est.status)}</div>
                     <div class="estacao-meta">ID: ${est.id ?? '--'}</div>
                     <div class="estacao-meta">📍 ${est.latitude ?? '--'}, ${est.longitude ?? '--'}</div>
-                    <div class="estacao-meta">Intervalo de leitura: ${est.intervalo ?? '5'} segundos</div>
-                    <div class="estacao-meta">Última leitura: <span class="ultima-leitura">${est.ultima_leitura ?? '--'}</span></div>
+                    <div class="estacao-meta">Intervalo de leitura: ${est.intervalo_leitura ?? '5000'} segundos</div>
+                    <div class="estacao-meta">Última leitura: <span class="ultima-leitura">--</span></div>
                 </div>
             </div>
             <div class="estacao-dir">
                 <div class="sensores-lista-inline">
                     <div class="sensores-header">Sensores</div>
-                    ${(est.sensores ?? [
-                        { nome:'DHT22 (Temperatura e Umidade)', status: est.status==='ativa'?'ativo':'inativo', hora: est.ultima_leitura?.split(' ')[1]??'-' },
-                        { nome:'MQ7 (Monóxido de Carbono)',     status: est.status==='ativa'?'ativo':'inativo', hora: est.ultima_leitura?.split(' ')[1]??'-' },
-                        { nome:'MQ135 (Qualidade do Ar)',       status: est.status==='ativa'?'ativo':'inativo', hora: est.ultima_leitura?.split(' ')[1]??'-' },
-                    ]).map(s => `<div class="sensor-row"><span class="sensor-nome">${s.nome}</span><span class="sensor-status">${sensorStatusDot(s.status)}</span><span class="sensor-hora">${s.hora??'-'}</span><span class="sensor-arrow">›</span></div>`).join('')}
+                    ${(est.sensores && est.sensores.length > 0 ? est.sensores : [
+                        { tipo:'DHT22', descricao:'Temperatura e Umidade', status: est.status==='ativa'?'ativo':'inativo' },
+                        { tipo:'MQ7',   descricao:'Monóxido de Carbono',   status: est.status==='ativa'?'ativo':'inativo' },
+                        { tipo:'MQ135', descricao:'Qualidade do Ar',       status: est.status==='ativa'?'ativo':'inativo' },
+                    ]).map(s => {
+                        const label = s.tipo ? `${s.tipo}${s.descricao ? ' — '+s.descricao : ''}` : (s.nome ?? 'Sensor');
+                        return `<div class="sensor-row"><span class="sensor-nome">${label}</span><span class="sensor-status">${sensorStatusDot(s.status)}</span><span class="sensor-hora">-</span><span class="sensor-arrow">›</span></div>`;
+                    }).join('')}
                 </div>
-                <div class="estacao-botoes">${botoeEstacao(est.status)}</div>
+                <div class="estacao-botoes">${botoeEstacao(est.id, est.status)}</div>
             </div>
         </div>`).join('');
     document.getElementById('page-info').textContent = `Mostrando 1 a ${estacoes.length} de ${estacoes.length} estações`;
@@ -322,6 +330,21 @@ async function carregarSensores() {
 }
 
 carregarSensores();
+
+async function alterarStatus(id, novoStatus, btn) {
+    try {
+        await fetch(`/api/estacoes/${id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: novoStatus })
+        });
+        carregarSensores(); // recarrega tudo
+    } catch (e) { alert('Erro ao atualizar status'); }
+}
+
+function editarEstacao(id) {
+    location.href = '/configuracoes?estacao_id=' + id;
+}
 
 document.getElementById('busca-input').addEventListener('input', function() {
     const termo = this.value.toLowerCase();

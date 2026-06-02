@@ -28,6 +28,7 @@ const wss    = new WebSocketServer({ server });
  
 const AuthRoutes       = require('./src/routes/AuthRoutes');
 const LeituraRoutes     = require('./src/routes/LeituraRoutes');
+const EstacaoRoutes     = require('./src/routes/EstacaoRoutes');
 const LeituraController = require('./src/controllers/LeituraController');
  
 LeituraController.setWss(wss);
@@ -59,6 +60,7 @@ app.set('views', './src/views');
 // ── Rotas ─────────────────────────────────────────────────────────────────
 app.use('/', AuthRoutes);
 app.use('/api', LeituraRoutes);
+app.use('/api', EstacaoRoutes);
  
 
 

@@ -11,7 +11,7 @@ routes.get("/cadastro", AuthController.showCadastro);
 
 routes.get("/recuperar-senha", AuthController.showRecuperarSenha);
 
-routes.get('/configuracoes', verificarSessao, AuthController.showConfiguracoes);
+routes.get('/configuracoes', verificarSessao, AuthController.showConfiguracoes.bind(AuthController));
 
 
 
@@ -24,9 +24,11 @@ routes.post('/logout', AuthController.logout.bind(AuthController));
 
 
 //protegidas
-routes.get('/home', verificarSessao, AuthController.showHome);
-routes.get('/historico', verificarSessao, AuthController.showHistorico);
-routes.get('/sensores', verificarSessao, AuthController.showSensores);
+routes.get('/home', verificarSessao, AuthController.showHome.bind(AuthController));
+
+routes.get('/historico', verificarSessao,AuthController.showHistorico.bind(AuthController));
+
+routes.get('/sensores', verificarSessao, AuthController.showSensores.bind(AuthController));
 
 routes.get('/', (req, res) => res.redirect('/login'));
 

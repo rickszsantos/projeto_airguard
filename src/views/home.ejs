@@ -189,85 +189,79 @@
 </div>
 
 <script>
-// ── Configuração dos datasets ────────────────────────────
+// ── Cole este bloco no <script> do home.ejs ──────────────
+
 const DATASETS = {
-    temperatura: { label: 'Temperatura (°C)',  titulo: 'Temperatura em Tempo Real (°C)',  cor: '#e74c3c', campo: 'temperatura' },
-    umidade:     { label: 'Umidade (%)',        titulo: 'Umidade em Tempo Real (%)',        cor: '#2563eb', campo: 'umidade'     },
-    gases:       { label: 'Gases MQ135 (ppm)', titulo: 'Gases — MQ135 em Tempo Real',     cor: '#f59e0b', campo: 'gases'       },
-    CO:          { label: 'CO — MQ7 (ppm)',    titulo: 'Monóxido de Carbono em Tempo Real',cor: '#8b5cf6', campo: 'CO'         }
+    temperatura: { label:'Temperatura (°C)',  titulo:'Temperatura em Tempo Real',  cor:'#e74c3c' },
+    umidade:     { label:'Umidade (%)',        titulo:'Umidade em Tempo Real',       cor:'#2563eb' },
+    gases:       { label:'Gases MQ135 (ppm)', titulo:'Gases MQ135 em Tempo Real',   cor:'#f59e0b' },
+    CO:          { label:'CO MQ7 (ppm)',      titulo:'CO MQ7 em Tempo Real',        cor:'#8b5cf6' }
 };
 
-const maxPontos = 20;
-let modoAtual   = 'temperatura';
-let labels      = [];
-const historico = { temperatura: [], umidade: [], gases: [], CO: [] };
+const MAX   = 20;   // janela deslizante — máximo de pontos
+let modo    = 'temperatura';
+let labels  = [];
+const hist  = { temperatura:[], umidade:[], gases:[], CO:[] };
 
-// ── Gráfico ──────────────────────────────────────────────
+// ── Gráfico ───────────────────────────────────────────────
 const ctx = document.getElementById('meuGrafico').getContext('2d');
 const grafico = new Chart(ctx, {
     type: 'line',
     data: { labels: [], datasets: [] },
     options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: { font: { family: 'Nunito', size: 12, weight: '700' }, color: '#1e3a5f', usePointStyle: true }
-            }
-        },
+        responsive: true, maintainAspectRatio: false, animation: false,
+        plugins: { legend: { position:'top', labels:{ font:{ family:'Nunito', size:12, weight:'700' }, color:'#1e3a5f', usePointStyle:true } } },
         scales: {
-            x: { ticks: { font: { family: 'Nunito', size: 10 }, color: '#64748b', maxTicksLimit: 8 }, grid: { color: 'rgba(37,99,235,0.06)' } },
-            y: { beginAtZero: false, ticks: { font: { family: 'Nunito', size: 10 }, color: '#64748b' }, grid: { color: 'rgba(37,99,235,0.06)' } }
+            x: { ticks:{ font:{ family:'Nunito',size:10 }, color:'#64748b', maxTicksLimit:8 }, grid:{ color:'rgba(37,99,235,0.06)' } },
+            y: { beginAtZero:false, ticks:{ font:{ family:'Nunito',size:10 }, color:'#64748b' }, grid:{ color:'rgba(37,99,235,0.06)' } }
         }
     }
 });
 
-function aplicarModo(modo) {
-    if (modo === 'todos') {
+// ── Aplica modo no gráfico ────────────────────────────────
+function aplicarModo(m) {
+    if (m === 'todos') {
         grafico.data.labels   = [...labels];
-        grafico.data.datasets = Object.entries(DATASETS).map(([, d]) => ({
-            label: d.label, data: [...historico[d.campo]],
-            borderColor: d.cor, backgroundColor: d.cor + '15',
-            borderWidth: 2, pointRadius: 3, tension: 0.4, fill: false
+        grafico.data.datasets = Object.entries(DATASETS).map(([k,d])=>({
+            label:d.label, data:[...hist[k]], borderColor:d.cor,
+            backgroundColor:d.cor+'18', borderWidth:2, pointRadius:3, tension:0.4, fill:false
         }));
-        document.getElementById('grafico-titulo').textContent = 'Todos os Sensores em Tempo Real';
+        document.getElementById('grafico-titulo').textContent = 'Todos os Sensores';
     } else {
-        const d = DATASETS[modo];
+        const d = DATASETS[m];
         grafico.data.labels   = [...labels];
         grafico.data.datasets = [{
-            label: d.label, data: [...historico[d.campo]],
-            borderColor: d.cor, backgroundColor: d.cor + '15',
-            borderWidth: 2.5, pointRadius: 4,
-            pointBackgroundColor: '#fff', pointBorderColor: d.cor, pointBorderWidth: 2,
-            tension: 0.4, fill: true
+            label:d.label, data:[...hist[m]], borderColor:d.cor,
+            backgroundColor:d.cor+'18', borderWidth:2.5, pointRadius:4,
+            pointBackgroundColor:'#fff', pointBorderColor:d.cor, pointBorderWidth:2,
+            tension:0.4, fill:true
         }];
         document.getElementById('grafico-titulo').textContent = d.titulo;
     }
     grafico.update();
 }
 
-function selecionarGrafico(modo, btn) {
-    modoAtual = modo;
+function selecionarGrafico(m, btn) {
+    modo = m;
     document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     aplicarModo(modo);
 }
 
-// ── Recebe dado novo ─────────────────────────────────────
+// ── Adiciona ponto na janela deslizante ───────────────────
 function adicionarLeitura(dado) {
-    const agora = new Date().toLocaleTimeString('pt-br', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const agora = new Date().toLocaleTimeString('pt-br',{ hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
     labels.push(agora);
-    Object.keys(historico).forEach(k => historico[k].push(dado[k] ?? null));
+    Object.keys(hist).forEach(k => hist[k].push(dado[k] ?? null));
 
-    if (labels.length > maxPontos) {
+    // janela deslizante — remove o mais antigo se passar de MAX
+    if (labels.length > MAX) {
         labels.shift();
-        Object.keys(historico).forEach(k => historico[k].shift());
+        Object.keys(hist).forEach(k => hist[k].shift());
     }
 
-    aplicarModo(modoAtual);
+    aplicarModo(modo);
 
     // atualiza cards
     if (dado.temperatura !== undefined) document.getElementById('card-temp').textContent    = dado.temperatura;
@@ -276,16 +270,103 @@ function adicionarLeitura(dado) {
     if (dado.CO           !== undefined) document.getElementById('card-co').textContent      = dado.CO;
 }
 
-// ── WebSocket ────────────────────────────────────────────
-function conectarWS() {
-    const ws = new WebSocket('ws://' + location.host);
-    ws.onopen    = () => console.log('Dashboard conectado!');
-    ws.onmessage = (e) => adicionarLeitura(JSON.parse(e.data));
-    ws.onclose   = () => setTimeout(conectarWS, 3000);
-    ws.onerror   = (e) => console.error('WS erro:', e);
+// ── Atualiza badge de alertas ─────────────────────────────
+function atualizarBadgeAlerta(total, lista) {
+    const badge = document.getElementById('notif-badge');
+    if (!badge) return;
+    badge.textContent  = total;
+    badge.style.display = total > 0 ? 'flex' : 'none';
+
+    // atualiza o dropdown de alertas se estiver aberto
+    const dropdown = document.getElementById('alertas-dropdown');
+    if (dropdown && dropdown.style.display !== 'none') {
+        renderizarAlertas(lista);
+    }
 }
 
-aplicarModo('temperatura');
+// ── Renderiza lista de alertas no dropdown ────────────────
+function renderizarAlertas(lista) {
+    const el = document.getElementById('alertas-lista');
+    if (!el) return;
+    if (!lista || lista.length === 0) {
+        el.innerHTML = '<div class="alerta-vazio">Nenhum alerta ativo</div>';
+        return;
+    }
+    el.innerHTML = lista.map(a => `
+        <div class="alerta-item ${a.tipo.includes('CRITICO') || a.tipo.includes('CRITICA') ? 'critico' : 'atencao'}">
+            <div class="alerta-msg">${a.mensagem}</div>
+            <div class="alerta-meta">${a.estacao} · ${new Date(a.created_at).toLocaleTimeString('pt-br',{hour:'2-digit',minute:'2-digit'})}</div>
+            <button class="alerta-resolver" onclick="resolverAlerta(${a.id})">Resolver</button>
+        </div>
+    `).join('');
+}
+
+// ── Resolve alerta via fetch ──────────────────────────────
+async function resolverAlerta(id) {
+    await fetch(`/api/alertas/${id}/resolver`, { method: 'PATCH' });
+    // o servidor vai mandar os alertas atualizados pelo WebSocket
+}
+
+// ── Toggle dropdown de alertas ────────────────────────────
+function toggleAlertas() {
+    const dd = document.getElementById('alertas-dropdown');
+    if (!dd) return;
+    const aberto = dd.style.display !== 'none';
+    dd.style.display = aberto ? 'none' : 'block';
+    if (!aberto) {
+        // carrega alertas ao abrir
+        fetch('/api/alertas')
+            .then(r => r.json())
+            .then(lista => renderizarAlertas(lista));
+    }
+}
+
+// ── Carrega histórico inicial do banco ────────────────────
+// O EJS já injetou as últimas 20 leituras em window.__ULTIMAS__
+// Isso faz o gráfico aparecer preenchido antes de qualquer WS
+function carregarIniciais() {
+    const dados = window.__ULTIMAS__ || [];
+    dados.forEach(d => {
+        const ts = new Date(d.timestamp);
+        const hora = ts.toLocaleTimeString('pt-br',{ hour:'2-digit', minute:'2-digit', second:'2-digit' });
+        labels.push(hora);
+        Object.keys(hist).forEach(k => hist[k].push(d[k] ?? null));
+    });
+    aplicarModo(modo);
+
+    // popula os cards com a última leitura
+    if (dados.length) {
+        const u = dados[dados.length - 1];
+        if (u.temperatura) document.getElementById('card-temp').textContent    = u.temperatura;
+        if (u.umidade)     document.getElementById('card-umidade').textContent = u.umidade;
+        if (u.gases)       document.getElementById('card-gases').textContent   = u.gases;
+        if (u.CO)          document.getElementById('card-co').textContent      = u.CO;
+    }
+}
+
+// ── WebSocket ─────────────────────────────────────────────
+function conectarWS() {
+    const ws = new WebSocket('ws://' + location.host);
+
+    ws.onopen = () => console.log('Dashboard WS conectado!');
+
+    ws.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+
+        if (msg.tipo === 'leitura') {
+            adicionarLeitura(msg);       // atualiza gráfico e cards
+        }
+        if (msg.tipo === 'alertas') {
+            atualizarBadgeAlerta(msg.total, msg.lista); // atualiza badge
+        }
+    };
+
+    ws.onclose = () => setTimeout(conectarWS, 3000);
+    ws.onerror = (e) => console.error('WS erro:', e);
+}
+
+// ── Inicia ────────────────────────────────────────────────
+carregarIniciais();
 conectarWS();
 </script>
 </body>
