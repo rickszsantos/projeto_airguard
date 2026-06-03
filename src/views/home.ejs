@@ -8,6 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="/css/home.css">
 </head>
+
+
+
+
+
+
 <body>
 <div class="layout">
 
@@ -69,6 +75,11 @@
 
     <!-- ── Main ── -->
     <div class="main">
+
+
+
+
+
         <header class="top-header">
             <div class="header-left">
                 <h1>AirGuard — Dashboard</h1>
@@ -94,6 +105,10 @@
                 </div>
             </div>
         </header>
+
+
+
+        
 
         <div class="content">
 
@@ -189,7 +204,7 @@
 </div>
 
 <script>
-// ── Cole este bloco no <script> do home.ejs ──────────────
+
 
 const DATASETS = {
     temperatura: { label:'Temperatura (°C)',  titulo:'Temperatura em Tempo Real',  cor:'#e74c3c' },
@@ -210,7 +225,7 @@ const grafico = new Chart(ctx, {
     data: { labels: [], datasets: [] },
     options: {
         responsive: true, maintainAspectRatio: false, animation: false,
-        plugins: { legend: { position:'top', labels:{ font:{ family:'Nunito', size:12, weight:'700' }, color:'#1e3a5f', usePointStyle:true } } },
+        plugins: { legend: { position:'top', onClick: () => {}, labels:{ font:{ family:'Nunito', size:12, weight:'700' }, color:'#1e3a5f', usePointStyle:true } } },
         scales: {
             x: { ticks:{ font:{ family:'Nunito',size:10 }, color:'#64748b', maxTicksLimit:8 }, grid:{ color:'rgba(37,99,235,0.06)' } },
             y: { beginAtZero:false, ticks:{ font:{ family:'Nunito',size:10 }, color:'#64748b' }, grid:{ color:'rgba(37,99,235,0.06)' } }
@@ -321,9 +336,6 @@ function toggleAlertas() {
     }
 }
 
-// ── Carrega histórico inicial do banco ────────────────────
-// O EJS já injetou as últimas 20 leituras em window.__ULTIMAS__
-// Isso faz o gráfico aparecer preenchido antes de qualquer WS
 function carregarIniciais() {
     const dados = window.__ULTIMAS__ || [];
     dados.forEach(d => {

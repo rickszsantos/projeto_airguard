@@ -65,6 +65,11 @@ class AuthController {
         }
     }
 
+
+
+
+
+    
     async login(req, res) {
         try {
             const { email, senha } = req.body;
@@ -88,6 +93,12 @@ class AuthController {
         }
     }
 
+
+
+
+
+
+    //deslogar
     logout(req, res) {
         req.session.destroy(() => res.redirect('/login'));
     }

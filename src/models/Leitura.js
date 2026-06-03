@@ -45,12 +45,110 @@ class Leitura{
                 FROM historico
                 ORDER BY id DESC
                 LIMIT ?
-            `).all(n).reverse(); // reverse para ordem cronológica
+            `).all(n).reverse(); 
         } catch { return []; }
     }
 
 
     
+
+
+
+
+
+    historicoAgregado(periodo = '7d') {
+        const config = {
+            '24h': {
+                desde:  "datetime('now', '-1 day')",
+                grupo:  "strftime('%Y-%m-%d %H:00', created_at)",
+                label:  "strftime('%d/%m %H:00', created_at)"
+            },
+            '7d': {
+                desde:  "datetime('now', '-7 days')",
+                // agrupa a cada 12h: 00:00 ou 12:00
+                grupo:  "strftime('%Y-%m-%d', created_at) || ' ' || (CASE WHEN CAST(strftime('%H', created_at) AS INTEGER) < 12 THEN '00' ELSE '12' END) || ':00'",
+                label:  "strftime('%d/%m', created_at) || (CASE WHEN CAST(strftime('%H', created_at) AS INTEGER) < 12 THEN ' manhã' ELSE ' tarde' END)"
+            },
+            '30d': {
+                desde:  "datetime('now', '-30 days')",
+                grupo:  "strftime('%Y-%m-%d', created_at)",
+                label:  "strftime('%d/%m', created_at)"
+            },
+            '90d': {
+                desde:  "datetime('now', '-90 days')",
+                // semana ISO: ano + número da semana
+                grupo:  "strftime('%Y-W', created_at) || strftime('%W', created_at)",
+                label:  "'Sem ' || CAST(strftime('%W', created_at) AS INTEGER)"
+            }
+        };
+
+        const c = config[periodo] ?? config['7d'];
+
+        try {
+            const rows = db.prepare(`
+                SELECT
+                    ${c.label}                   AS label,
+                    ROUND(AVG(temperatura), 1)   AS temperatura,
+                    ROUND(AVG(umidade), 1)        AS umidade,
+                    ROUND(AVG(co_ppm), 1)         AS CO,
+                    ROUND(AVG(gases_ppm), 1)      AS gases,
+                    ROUND(AVG(indice_ar), 1)      AS indice_ar,
+                    COUNT(*)                      AS total_registros,
+                    MIN(created_at)               AS timestamp_inicio,
+                    MAX(created_at)               AS timestamp_fim
+                FROM historico
+                WHERE created_at >= ${c.desde}
+                GROUP BY ${c.grupo}
+                ORDER BY timestamp_inicio ASC
+            `).all();
+
+            // resumo geral do período para os cards
+            const resumo = db.prepare(`
+                SELECT
+                    ROUND(AVG(temperatura), 1) AS media_temp,
+                    ROUND(AVG(umidade), 1)      AS media_umidade,
+                    ROUND(AVG(co_ppm), 1)       AS media_co,
+                    ROUND(AVG(gases_ppm), 1)    AS media_gases,
+                    MAX(gases_ppm)              AS pior_gases,
+                    MAX(co_ppm)                 AS pior_co,
+                    SUM(total_registros_sub)    AS total_registros
+                FROM (
+                    SELECT gases_ppm, co_ppm, temperatura, umidade,
+                           COUNT(*) AS total_registros_sub
+                    FROM historico
+                    WHERE created_at >= ${c.desde}
+                    GROUP BY id
+                ) sub
+            `).get();
+
+            return { pontos: rows, resumo };
+        } catch (e) {
+            console.error('[historicoAgregado]', e);
+            return { pontos: [], resumo: null };
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     ultimaLeitura() {
@@ -70,25 +168,7 @@ class Leitura{
 
 
 
-    listarHistorico(periodo = '7d', limite = 500) {
-        const filtros = {
-            '24h': "datetime('now', '-1 day')",
-            '7d':  "datetime('now', '-7 days')",
-            '30d': "datetime('now', '-30 days')",
-            '90d': "datetime('now', '-90 days')"
-        };
-        const desde = filtros[periodo] ?? filtros['7d'];
-        try {
-            return db.prepare(`
-                SELECT temperatura, umidade, co_ppm AS CO, gases_ppm AS gases,
-                       indice_ar, created_at AS timestamp
-                FROM historico
-                WHERE created_at >= ${desde}
-                ORDER BY created_at ASC
-                LIMIT ?
-            `).all(limite);
-        } catch { return []; }
-    }
+    
 
 
 

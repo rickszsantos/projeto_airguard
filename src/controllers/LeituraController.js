@@ -1,4 +1,6 @@
 const Leitura = require('../models/Leitura');
+const Estacao = require('../models/Estacao');
+
 
 let wssRef = null;
 
@@ -39,26 +41,14 @@ class LeituraController {
         if (gases       === undefined) return res.status(400).json({ erro: 'Falta: gases' });
 
         Leitura.salvarLeitura(temperatura, umidade, CO, gases);
+
         this._broadcast({ temperatura, umidade, CO, gases });
+
+        const alertas = Leitura.alertasAtivos();
+        this._broadcast({ tipo: 'alertas', total: alertas.length, lista: alertas });
 
         return res.status(201).json({ status: 'ok', recebido: { temperatura, umidade, CO, gases } });
     }
-
-
-
-
-
-
-
-
-    listarHistorico(req, res) {
-        const { periodo = '7d' } = req.query;
-        const dados = Leitura.listarHistorico(periodo);
-        res.json({ dados, total: dados.length });
-    }
-
-
-
 
 
 
@@ -71,10 +61,60 @@ class LeituraController {
 
 
 
-    ultimaLeitura(req, res) {
-        const ultima = Leitura.ultimaLeitura();
-        res.json(ultima ?? {});
+    historico(req, res) {
+        const periodo = req.query.periodo || '7d';
+        const { pontos, resumo } = Leitura.historicoAgregado(periodo);
+        return res.json({ pontos, resumo, periodo });
     }
+
+
+    listarAlertas(req, res) {
+        return res.json(Leitura.alertasAtivos());
+    }
+
+
+
+
+
+    resolverAlerta(req, res) {
+        const { id }    = req.params;
+        const usuarioId = req.session?.usuarioId ?? null;
+        Leitura.resolverAlerta(id, usuarioId);
+
+        const alertas = Leitura.alertasAtivos();
+        this._broadcast({ tipo: 'alertas', total: alertas.length, lista: alertas });
+
+        return res.json({ ok: true });
+    }
+   
+
+
+
+
+
+    listarEstacoes(req, res) {
+        return res.json(Estacao.listarComSensores());
+    }
+
+
+
+
+
+
+    criarEstacao(req, res) {
+        const { nome, descricao, latitude, longitude, intervalo } = req.body;
+        if (!nome) return res.status(400).json({ erro: 'Nome obrigatório' });
+        const result = Estacao.criar(nome, descricao, latitude, longitude, intervalo);
+        return res.status(201).json({ id: result.lastInsertRowid });
+    }
+
+
+
+
+    //ultimaLeitura(req, res) {
+    //    const ultima = Leitura.ultimaLeitura();
+    //    res.json(ultima ?? {});
+    //}
 }
 
 module.exports = new LeituraController();
