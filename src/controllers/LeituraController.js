@@ -16,6 +16,20 @@ class LeituraController {
         });
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     receberDados(req, res) {
         const { temperatura, umidade, gases, CO } = req.body;
 
@@ -30,11 +44,32 @@ class LeituraController {
         return res.status(201).json({ status: 'ok', recebido: { temperatura, umidade, CO, gases } });
     }
 
+
+
+
+
+
+
+
     listarHistorico(req, res) {
         const { periodo = '7d' } = req.query;
         const dados = Leitura.listarHistorico(periodo);
         res.json({ dados, total: dados.length });
     }
+
+
+
+
+
+
+
+    ultimas(req, res) {
+        const n = parseInt(req.query.n) || 20;
+        return res.json(Leitura.ultimas(n));
+    }
+
+
+
 
     ultimaLeitura(req, res) {
         const ultima = Leitura.ultimaLeitura();

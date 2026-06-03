@@ -50,6 +50,8 @@ class Leitura{
     }
 
 
+    
+
 
     ultimaLeitura() {
         try {

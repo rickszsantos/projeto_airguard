@@ -64,27 +64,31 @@ app.use('/api', EstacaoRoutes);
  
 
 
-wss.on('connection', (ws) => {
-  console.log('ESP32 conectado!');
- 
-  ws.on('message', (msg) => {
-    try {
-      const dado = JSON.parse(msg);
-      console.log('recebido:', dado);
- 
-      const req = { body: dado };
-      const res = {
-        status: (code) => ({ json: (data) => console.log(`status ${code}:`, data) }),
-        json: (data) => console.log('resposta:', data)
-      };
- 
-      LeituraController.receberDados(req, res);
-    } catch (e) {
-      console.error('Mensagem inválida do ESP32:', e.message);
+
+
+
+
+wss.on('connection', (ws, req) => {
+    const url = new URL(req.url, 'http://localhost');
+    ws._tipo  = url.searchParams.get('tipo') || 'dashboard';
+
+    if (ws._tipo === 'esp32') {
+        console.log('ESP32 conectado!');
+        ws.on('message', (msg) => {
+            try {
+                const dado = JSON.parse(msg);
+                const fakeReq = { body: dado };
+                const fakeRes = {
+                    status: (c) => ({ json: (d) => console.log(`[${c}]`, d) }),
+                    json:   (d) => console.log('[resp]', d),
+                };
+                LeituraController.receberDados(fakeReq, fakeRes);
+            } catch (e) { console.error('Msg inválida ESP32:', e.message); }
+        });
+        ws.on('close', () => console.log('ESP32 desconectado'));
+    } else {
+        ws.on('close', () => {});
     }
-  });
- 
-  ws.on('close', () => console.log('ESP32 desconectado'));
 });
  
 
@@ -94,7 +98,7 @@ wss.on('connection', (ws) => {
 
 const PORTA = process.env.PORT || 3000;
 server.listen(PORTA, () => {
-  console.log(`✅ AirGuard rodando em http://localhost:${PORTA}`);
+  console.log(`AirGuard rodando em http://localhost:${PORTA}`);
 });
  
 
