@@ -82,7 +82,7 @@
 
         <header class="top-header">
             <div class="header-left">
-                <h1>AirGuard — Dashboard</h1>
+                <h1>Dashboard</h1>
             </div>
             <div class="header-right">
                 <div class="notif-btn">
@@ -91,7 +91,8 @@
                         <path d="M13.73 21a2 2 0 01-3.46 0"/>
                     </svg>
                 </div>
-                <div class="user-info">
+                <div class="user-wrapper">  
+                <div class="user-info" id="user-btn" onclick="toggleUserMenu()">
                     <div class="user-avatar">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
@@ -105,16 +106,61 @@
                     
 
                     <!-- seta para mostrar o menu -->
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg class="seta" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                     
                 </div>
 
                 
 
+                
+  <div class="user-dropdown" id="user-dd">
+    <div class="dd-head">
+      <div class="dd-av">
+        <%= (typeof usuario !== 'undefined' ? usuario : 'U').substring(0,2).toUpperCase() %>
+      </div>
+      <div>
+        <div class="dd-name"><%= typeof usuario !== 'undefined' ? usuario : 'Usuário' %></div>
+        <div class="dd-role"><%= typeof perfil !== 'undefined' ? perfil.toUpperCase() : 'USUÁRIO' %></div>
+      </div>
+    </div>
+    <div class="dd-body">
+      <a href="/perfil" class="dd-item">
+        <span class="dd-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+          </svg>
+        </span>
+        Meu perfil
+      </a>
+      <a href="/configuracoes" class="dd-item">
+        <span class="dd-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
+        </span>
+        Configurações
+      </a>
+      <div class="dd-sep"></div>
+      <a href="/logout" class="dd-item danger">
+        <span class="dd-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </span>
+        Sair
+      </a>
+    </div>
+  </div>
+</div>
 
 
 
-                    
+
+
+                
             </div>
         </header>
 
@@ -216,6 +262,20 @@
 </div>
 
 <script>
+
+function toggleUserMenu() {
+    document.getElementById('user-btn').classList.toggle('open');
+    document.getElementById('user-dd').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+    const w = document.querySelector('.user-wrapper');
+    if (w && !w.contains(e.target)) {
+        document.getElementById('user-btn')?.classList.remove('open');
+        document.getElementById('user-dd')?.classList.remove('open');
+    }
+});
+
+
 
 
 const DATASETS = {
@@ -388,6 +448,17 @@ function conectarWS() {
     ws.onclose = () => setTimeout(conectarWS, 3000);
     ws.onerror = (e) => console.error('WS erro:', e);
 }
+
+
+
+
+
+
+
+
+
+
+
 
 // ── Inicia ────────────────────────────────────────────────
 carregarIniciais();

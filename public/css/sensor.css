@@ -348,3 +348,99 @@ a.nav-item.active svg { opacity: 1; }
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+
+
+
+
+
+
+
+
+
+.user-wrapper { position: relative; }
+
+.user-info {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.12);
+    padding: 6px 10px 6px 6px;
+    border-radius: 20px;
+    cursor: pointer; border: none;
+    color: #fff; font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    transition: background 0.14s;
+    user-select: none;
+}
+.user-info:hover { background: rgba(255,255,255,0.20); }
+.user-info.open  { background: rgba(255,255,255,0.22); }
+
+.user-chevron { color: rgba(255,255,255,0.65); display: flex; align-items: center; transition: transform 0.2s; }
+.user-info.open .user-chevron { transform: rotate(180deg); }
+
+
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px); right: 0;
+    width: 210px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid rgba(30,86,196,0.13);
+    box-shadow: 0 10px 36px rgba(30,86,196,0.16), 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    display: none;
+    z-index: 400;
+    transform-origin: top right;
+}
+.user-dropdown.open {
+    display: block;
+    animation: ddIn 0.15s ease;
+}
+@keyframes ddIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-5px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+.dd-head {
+    padding: 14px 16px 12px;
+    background: #f0f6ff;
+    border-bottom: 1px solid #dbeafe;
+    display: flex; align-items: center; gap: 10px;
+}
+.dd-av {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #dbeafe; border: 2px solid #93c5fd;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; color: #1d4ed8;
+    flex-shrink: 0;
+}
+.dd-name { font-size: 13px; font-weight: 800; color: #1e3a5f; }
+.dd-role {
+    display: inline-flex; margin-top: 3px;
+    background: #dbeafe; color: #1d4ed8;
+    font-size: 9px; font-weight: 800;
+    padding: 2px 7px; border-radius: 4px; letter-spacing: 0.5px;
+}
+.dd-body { padding: 6px; }
+.dd-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 9px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700; color: #1e3a5f;
+    cursor: pointer; border: none; background: transparent;
+    width: 100%; text-align: left; text-decoration: none;
+    transition: background 0.12s, color 0.12s;
+}
+.dd-item:hover { background: #e8f0fe; color: #1a56c4; }
+.dd-icon {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: #e8f0fe; color: #2563eb;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.12s;
+}
+.dd-item:hover .dd-icon { background: #bfdbfe; }
+.dd-item.danger { color: #dc2626; }
+.dd-item.danger:hover { background: #fff5f5; color: #dc2626; }
+.dd-item.danger .dd-icon { background: #fee2e2; color: #dc2626; }
+.dd-item.danger:hover .dd-icon { background: #fecaca; }
+.dd-sep { height: 1px; background: #e8f0fe; margin: 4px 6px; }
