@@ -231,3 +231,11 @@ a.nav-item.active svg { opacity:1; }
 .dd-item.danger .dd-icon { background: #fee2e2; color: #dc2626; }
 .dd-item.danger:hover .dd-icon { background: #fecaca; }
 .dd-sep { height: 1px; background: #e8f0fe; margin: 4px 6px; }
+
+#aba-sistema .cards-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+#aba-sistema .cards-grid .config-card:last-child {
+    grid-column: 1 / -1;
+}

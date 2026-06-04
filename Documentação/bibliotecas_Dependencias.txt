@@ -8,7 +8,7 @@ Arduino:
  socketioClient
  websockets
  wifi.h
- arduinoJson
+
 
 Dependencias Json:
  bcrypt
