@@ -116,8 +116,8 @@
       </div>
     </div>
     <div class="dd-body">
-      <a href="/perfil" class="dd-item">
-        <span class="dd-icon">
+      <a href="/configuracoes#perfil" class="dd-item" >
+        <span class="dd-icon" >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
           </svg>
@@ -134,7 +134,7 @@
         Configurações
       </a>
       <div class="dd-sep"></div>
-                        <a href="/logout" class="dd-item danger">
+                        <a class="dd-item danger" onclick="logout()">
                             <span class="dd-icon">
                               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
@@ -251,6 +251,25 @@
 </script>
 
 <script>
+
+//opção de logout 
+async function logout() {
+    await fetch('/logout', { method: 'POST' });
+    window.location.href = '/login';
+}
+
+
+
+
+//ancora do menu para passar direto para o perfil
+window.addEventListener('load', () => {
+    const ancora = window.location.hash.replace('#', '');
+
+    if (ancora) {
+        const btn = document.querySelector(`[onclick*="'${ancora}'"]`);
+        if (btn) mudarAba(ancora, btn);
+    }
+});
 
 function toggleUserMenu() {
     document.getElementById('user-btn').classList.toggle('open');

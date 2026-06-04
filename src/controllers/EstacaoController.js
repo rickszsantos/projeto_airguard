@@ -1,5 +1,6 @@
 const Estacao = require('../models/Estacao');
 const db      = require('../config/database');
+const { enviarESP32 } = require('../utils/esp32');
 
 class EstacaoController {
 
@@ -23,14 +24,40 @@ class EstacaoController {
         }
     }
 
+
+
+
+    
     atualizarStatus(req, res) {
         const { id } = req.params;
         const { status } = req.body;
+
+
         if (!['ativa', 'inativa', 'manutencao'].includes(status))
             return res.status(400).json({ erro: 'Status inválido' });
+
         Estacao.atualizarStatus(id, status);
-        res.json({ ok: true });
+
+        if (status === 'ativa') {
+        enviarESP32({ comando: 'INICIAR_LEITURA', estacao_id: parseInt(id) });
+        } else {
+        enviarESP32({ comando: 'PARAR_LEITURA', estacao_id: parseInt(id) });
+        }
+
+        return res.json({ ok: true });
     }
+
+
+
+
+    
+
+
+
+
+
+
+
 }
 
 module.exports = new EstacaoController();

@@ -30,6 +30,8 @@ const AuthRoutes       = require('./src/routes/AuthRoutes');
 const LeituraRoutes     = require('./src/routes/LeituraRoutes');
 const EstacaoRoutes     = require('./src/routes/EstacaoRoutes');
 const LeituraController = require('./src/controllers/LeituraController');
+ const { setConexaoESP32, enviarESP32 } = require('./src/utils/esp32');
+
  
 LeituraController.setWss(wss);
  
@@ -67,16 +69,21 @@ app.use('/api', EstacaoRoutes);
 
 
 
-LeituraController.setWss(wss);
+
+
+
+
 wss.on('connection', (ws, req) => {
     const url = new URL(req.url, 'http://localhost');
     ws._tipo  = url.searchParams.get('tipo') || 'dashboard';
 
     if (ws._tipo === 'esp32') {
+        setConexaoESP32(ws); // ← usa o utils
         console.log('ESP32 conectado!');
+
         ws.on('message', (msg) => {
             try {
-                const dado = JSON.parse(msg);
+                const dado    = JSON.parse(msg);
                 const fakeReq = { body: dado };
                 const fakeRes = {
                     status: (c) => ({ json: (d) => console.log(`[${c}]`, d) }),
@@ -85,12 +92,22 @@ wss.on('connection', (ws, req) => {
                 LeituraController.receberDados(fakeReq, fakeRes);
             } catch (e) { console.error('Msg inválida ESP32:', e.message); }
         });
-        ws.on('close', () => console.log('ESP32 desconectado'));
+
+        ws.on('close', () => {
+            setConexaoESP32(null);
+            console.log('ESP32 desconectado');
+        });
     } else {
         ws.on('close', () => {});
     }
 });
- 
+
+
+
+
+
+
+
 
 
 
@@ -105,4 +122,5 @@ server.listen(PORTA, () => {
 
 
 module.exports = app;
+module.exports = enviarESP32;
  
