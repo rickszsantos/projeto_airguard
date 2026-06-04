@@ -67,7 +67,7 @@ app.use('/api', EstacaoRoutes);
 
 
 
-
+LeituraController.setWss(wss);
 wss.on('connection', (ws, req) => {
     const url = new URL(req.url, 'http://localhost');
     ws._tipo  = url.searchParams.get('tipo') || 'dashboard';

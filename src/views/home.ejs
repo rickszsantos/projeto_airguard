@@ -76,10 +76,6 @@
     <!-- ── Main ── -->
     <div class="main">
 
-
-
-
-
         <header class="top-header">
             <div class="header-left">
                 <h1>Dashboard</h1>
@@ -108,11 +104,7 @@
                     <!-- seta para mostrar o menu -->
                     <svg class="seta" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                     
-                </div>
-
-                
-
-                
+                </div>           
   <div class="user-dropdown" id="user-dd">
     <div class="dd-head">
       <div class="dd-av">
@@ -158,10 +150,6 @@
    
             </div>
         </header>
-
-
-
-        
 
         <div class="content">
 
@@ -255,6 +243,12 @@
         </div>
     </div>
 </div>
+
+
+
+<script>
+    window.__ULTIMAS__ = <%- JSON.stringify(typeof ultimas !== 'undefined' ? ultimas : []) %>;
+</script>
 
 <script>
 
@@ -433,7 +427,7 @@ function conectarWS() {
         const msg = JSON.parse(e.data);
 
         if (msg.tipo === 'leitura') {
-            adicionarLeitura(msg);       // atualiza gráfico e cards
+            adicionarLeitura(msg);       
         }
         if (msg.tipo === 'alertas') {
             atualizarBadgeAlerta(msg.total, msg.lista); // atualiza badge
@@ -443,14 +437,6 @@ function conectarWS() {
     ws.onclose = () => setTimeout(conectarWS, 3000);
     ws.onerror = (e) => console.error('WS erro:', e);
 }
-
-
-
-
-
-
-
-
 
 
 

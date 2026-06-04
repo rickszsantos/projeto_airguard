@@ -42,7 +42,7 @@ class LeituraController {
 
         Leitura.salvarLeitura(temperatura, umidade, CO, gases);
 
-        this._broadcast({ temperatura, umidade, CO, gases });
+        this._broadcast({ tipo: 'leitura', temperatura, umidade, CO, gases });
 
         const alertas = Leitura.alertasAtivos();
         this._broadcast({ tipo: 'alertas', total: alertas.length, lista: alertas });
@@ -111,10 +111,7 @@ class LeituraController {
 
 
 
-    //ultimaLeitura(req, res) {
-    //    const ultima = Leitura.ultimaLeitura();
-    //    res.json(ultima ?? {});
-    //}
+   
 }
 
 module.exports = new LeituraController();

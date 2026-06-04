@@ -345,6 +345,7 @@ a.nav-item.active svg { opacity: 1; }
     flex-direction: column;
     gap: 16px;
     overflow-y: auto;
+    min-height: 0;
 }
 
 /* ── Cards resumo ── */
@@ -416,8 +417,8 @@ a.nav-item.active svg { opacity: 1; }
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
-    height: 420px;
+    flex: 1;        
+    min-height: 0; 
     overflow: hidden;
     padding: 0;
 }
