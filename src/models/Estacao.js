@@ -58,7 +58,18 @@ class Estacao{
 
     atualizarStatus(id, status) {
         db.prepare("UPDATE estacoes SET status = ? WHERE id = ?").run(status, id);
+        
+        const statusSensor = status === 'ativa' ? 'ativo' : 'inativo';
+    db.prepare("UPDATE sensores SET status = ? WHERE estacao_id = ?").run(statusSensor, id);
     }
+
+
+    leiturasdiarias() {
+
+        return db.prepare("SELECT COUNT(*) AS n FROM historico WHERE date(created_at) = date('now')").get()?.n ?? 0;
+   
+    }
+
 
 
 

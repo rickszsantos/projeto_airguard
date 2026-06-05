@@ -36,8 +36,8 @@ const LeituraController = require('./src/controllers/LeituraController');
 LeituraController.setWss(wss);
  
 
-app.use(express.static('public'));
 app.use(express.json());
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
  
 
@@ -120,5 +120,5 @@ server.listen(PORTA, () => {
 
 
 module.exports = app;
-module.exports = enviarESP32;
+
  

@@ -405,7 +405,7 @@ async function carregarSensores() {
         document.getElementById('estacoes-total').textContent  = `de ${estacoes.length} estações`;
         document.getElementById('sensores-ativos').textContent = ativas * 3;
         document.getElementById('sensores-total').textContent  = `de ${estacoes.length * 3} sensores`;
-        document.getElementById('leituras-hoje').textContent   = json.leituras_hoje ?? '--';
+        document.getElementById('leituras-hoje').textContent   = json.leituras_hoje ?? '00';//-------------------------------------------------------------
         renderEstacoes(estacoes);
     } catch (err) {
         document.getElementById('estacoes-lista').innerHTML = '<div class="loading-msg">Erro ao carregar dados. Verifique a API.</div>';

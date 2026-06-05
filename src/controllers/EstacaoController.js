@@ -5,6 +5,26 @@ const { enviarESP32 } = require('../utils/esp32');
 class EstacaoController {
 
     listarEstacoes(req, res) {
+
+
+
+console.log('>>> entrou no listarEstacoes');
+const estacoes = Estacao.listarComSensores();
+console.log('>>> estacoes ok', estacoes.length);
+const resumo = Estacao.resumo();
+console.log('>>> resumo ok');
+let leituras_hoje = 0;
+try {
+    leituras_hoje = Estacao.leiturasdiarias();
+    console.log('>>> leituras_hoje:', leituras_hoje);
+} catch (err) {
+    console.error('>>> ERRO leiturasdiarias:', err);
+}
+console.log('>>> json final:', { leituras_hoje });
+
+
+
+
         try {
             const estacoes    = Estacao.listarComSensores();
             const resumo      = Estacao.resumo();
@@ -12,15 +32,18 @@ class EstacaoController {
             // leituras de hoje usando a tabela historico
             let leituras_hoje = 0;
             try {
-                leituras_hoje = db.prepare(
-                    "SELECT COUNT(*) AS n FROM historico WHERE date(created_at) = date('now')"
-                ).get()?.n ?? 0;
-            } catch (_) {}
+                leituras_hoje = Estacao.leiturasdiarias();
+                console.log(leituras_hoje);
+                
+            } catch (err) {console.error('[leiturasdiarias ERROR]', err);
+
+            }
+
 
             return res.json({ estacoes, resumo, leituras_hoje });
         } catch (err) {
             console.error('[listarEstacoes]', err);
-            return res.status(500).json({ estacoes: [], resumo: {}, leituras_hoje: 0 });
+            return res.status(500).json({ estacoes: [], resumo: {}, leituras_hoje: {} });
         }
     }
 
