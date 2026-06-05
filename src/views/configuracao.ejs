@@ -382,40 +382,77 @@
             </div>
 
             <!-- ── ABA PERFIL ── -->
-            <div id="aba-perfil" class="aba-content" style="display:none">
-                <div class="config-card" style="max-width:600px">
-                    <h3 class="card-title">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        Perfil do Usuário
-                    </h3>
-                    <div class="config-row">
-                        <div class="config-info">
-                            <span class="config-label">Nome</span>
-                            <span class="config-desc">Seu nome de exibição</span>
-                        </div>
-                        <input type="text" class="config-input" value="Admin" placeholder="Nome"/>
-                    </div>
-                    <div class="config-row">
-                        <div class="config-info">
-                            <span class="config-label">E-mail</span>
-                            <span class="config-desc">Usado para alertas e notificações</span>
-                        </div>
-                        <input type="email" class="config-input" placeholder="email@exemplo.com"/>
-                    </div>
-                    <div class="config-row">
-                        <div class="config-info">
-                            <span class="config-label">Nova senha</span>
-                            <span class="config-desc">Deixe em branco para manter a atual</span>
-                        </div>
-                        <input type="password" class="config-input" placeholder="••••••••"/>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn-salvar">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                            Salvar Alterações
+             <div id="aba-perfil" class="aba-content" style="display:none">
+    <div class="perfil-card">
+
+        <div class="perfil-header">
+            <h3 class="card-title">Informações do Perfil</h3>
+            <p style="font-size:13px; color:#64748b; font-weight:600; margin-top:4px;">Gerencie suas informações pessoais e preferências da conta.</p>
+        </div>
+
+        <div class="perfil-body">
+            <div class="perfil-avatar-col">
+                <div class="perfil-avatar" id="perfil-avatar-circle">
+                    <span id="perfil-initials"><%= (typeof usuario !== 'undefined' ? usuario : 'U').substring(0,2).toUpperCase() %></span>
+                </div>
+                <button class="btn-alterar-foto" onclick="document.getElementById('foto-input').click()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    Alterar foto
+                </button>
+                <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="previewFoto(this)"/>
+                <p style="font-size:11px; color:#94a3b8; font-weight:600; margin-top:6px;">PNG ou JPG. Máx. 2MB.</p>
+            </div>
+
+            <div class="perfil-campos">
+                <div class="perfil-campo">
+                    <label class="perfil-label">Nome completo</label>
+                    <input type="text" class="perfil-input" value="<%= typeof usuario !== 'undefined' ? usuario : '' %>" placeholder="Seu nome completo"/>
+                </div>
+                <div class="perfil-campo">
+                    <label class="perfil-label">E-mail</label>
+                    <input type="email" class="perfil-input" placeholder="seu@email.com"/>
+                </div>
+                <div class="perfil-campo">
+                    <label class="perfil-label">Senha atual</label>
+                    <div class="perfil-input-wrap">
+                        <input type="password" class="perfil-input" id="senha-atual" placeholder="••••••••"/>
+                        <button class="toggle-senha" onclick="toggleSenha('senha-atual')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                 </div>
+                <div class="perfil-campo">
+                    <label class="perfil-label">Nova senha</label>
+                    <div class="perfil-input-wrap">
+                        <input type="password" class="perfil-input" id="nova-senha" placeholder="Digite a nova senha"/>
+                        <button class="toggle-senha" onclick="toggleSenha('nova-senha')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="perfil-campo">
+                    <label class="perfil-label">Confirmar nova senha</label>
+                    <div class="perfil-input-wrap">
+                        <input type="password" class="perfil-input" id="conf-senha" placeholder="Digite novamente a nova senha"/>
+                        <button class="toggle-senha" onclick="toggleSenha('conf-senha')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="perfil-footer">
+            <button class="btn-cancelar-perfil">Cancelar</button>
+            <button class="btn-salvar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar alterações
+            </button>
+        </div>
+
+    </div>
+</div>
+           
             </div>
 
         </div>
@@ -478,6 +515,25 @@ function fecharMenu() {
 window.addEventListener('load', ativarPorAncora);
 //para recarregar a pagina quando clicar no perfil
 window.addEventListener('hashchange', ativarPorAncora);
+
+function toggleSenha(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function previewFoto(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const circle = document.getElementById('perfil-avatar-circle');
+            circle.style.backgroundImage = `url(${e.target.result})`;
+            circle.style.backgroundSize = 'cover';
+            circle.style.backgroundPosition = 'center';
+            document.getElementById('perfil-initials').style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
 </script>
 

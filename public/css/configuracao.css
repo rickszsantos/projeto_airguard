@@ -239,3 +239,82 @@ a.nav-item.active svg { opacity:1; }
 #aba-sistema .cards-grid .config-card:last-child {
     grid-column: 1 / -1;
 }
+
+/* ── Aba Perfil ── */
+.perfil-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px 28px;
+}
+
+.perfil-header { margin-bottom: 24px; }
+
+.perfil-body {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.perfil-avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.perfil-avatar {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: #475569;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 800; color: #fff;
+}
+
+.btn-alterar-foto {
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid #e2e8f0;
+    color: var(--text-main); font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+}
+.btn-alterar-foto:hover { background: #f8faff; }
+
+.perfil-campos { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+
+.perfil-campo { display: flex; flex-direction: column; gap: 6px; }
+
+.perfil-label { font-size: 13px; font-weight: 700; color: var(--text-main); }
+
+.perfil-input {
+    background: #fff; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 10px 14px;
+    font-family: 'Nunito', sans-serif; font-size: 13px;
+    font-weight: 600; color: var(--text-main);
+    outline: none; width: 100%; transition: border-color 0.15s;
+}
+.perfil-input:focus { border-color: var(--blue-mid); }
+
+.perfil-input-wrap { position: relative; display: flex; align-items: center; }
+.perfil-input-wrap .perfil-input { padding-right: 40px; }
+
+.toggle-senha {
+    position: absolute; right: 12px;
+    background: transparent; border: none;
+    color: #94a3b8; cursor: pointer; display: flex; align-items: center; padding: 0;
+}
+
+.perfil-footer {
+    display: flex; justify-content: flex-end; gap: 10px;
+    margin-top: 24px; padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-cancelar-perfil {
+    background: #fff; border: 1px solid #e2e8f0;
+    color: var(--text-muted); font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 9px 20px; border-radius: 8px; cursor: pointer;
+}
+.btn-cancelar-perfil:hover { background: #f8faff; }
