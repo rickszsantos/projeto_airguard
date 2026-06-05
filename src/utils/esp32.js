@@ -1,16 +1,29 @@
-let conexao_esp32 = null;
+const conexoes = new Map();
 
-function setConexaoESP32(ws) {
-    conexao_esp32 = ws;
+function setConexaoESP32(estacaoId, ws) {
+    conexoes.set(estacaoId, ws);
+    console.log(`ESP32 estação ${estacaoId} registrado`);
 }
 
-function enviarESP32(comando) {
-    if (conexao_esp32 && conexao_esp32.readyState === 1) {
-        conexao_esp32.send(JSON.stringify(comando));
-        console.log('Comando enviado ao ESP32:', comando);
+function removerConexaoESP32(estacaoId) {
+    conexoes.delete(estacaoId);
+    console.log(`ESP32 estação ${estacaoId} desconectado`);
+}
+
+function enviarESP32(estacaoId, comando) {
+    const ws = conexoes.get(estacaoId);
+    if (ws && ws.readyState === 1) {
+        ws.send(JSON.stringify(comando));
+
+        if (comando.comando === 'INICIAR_LEITURA') {
+            console.log(`Comando enviado — estação ${estacaoId} ativada`);
+        } else {
+            console.log(`Comando enviado — estação ${estacaoId} desativada`);
+        }
+
     } else {
-        console.log('ESP32 não conectado — comando ignorado');
+        console.log(`ESP32 estação ${estacaoId} não conectado`);
     }
 }
 
-module.exports = { setConexaoESP32, enviarESP32 };
+module.exports = { setConexaoESP32, removerConexaoESP32, enviarESP32 };

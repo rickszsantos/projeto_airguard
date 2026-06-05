@@ -76,10 +76,11 @@ app.use('/api', EstacaoRoutes);
 wss.on('connection', (ws, req) => {
     const url = new URL(req.url, 'http://localhost');
     ws._tipo  = url.searchParams.get('tipo') || 'dashboard';
+    ws._estacao_id = parseInt(url.searchParams.get('estacao')) || null;
 
-    if (ws._tipo === 'esp32') {
-        setConexaoESP32(ws); // ← usa o utils
-        console.log('ESP32 conectado!');
+    if (ws._tipo === 'esp32' && ws._estacao_id) {
+        setConexaoESP32(ws._estacao_id, ws); // ← usa o utils
+        console.log(`ESP32 estação ${ws._estacao_id} conectado!`);
 
         ws.on('message', (msg) => {
             try {
@@ -94,12 +95,9 @@ wss.on('connection', (ws, req) => {
         });
 
         ws.on('close', () => {
-            setConexaoESP32(null);
-            console.log('ESP32 desconectado');
+            removerConexaoESP32(ws._estacao_id);
         });
-    } else {
-        ws.on('close', () => {});
-    }
+    } 
 });
 
 

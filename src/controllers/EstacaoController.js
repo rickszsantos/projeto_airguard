@@ -39,9 +39,9 @@ class EstacaoController {
         Estacao.atualizarStatus(id, status);
 
         if (status === 'ativa') {
-        enviarESP32({ comando: 'INICIAR_LEITURA', estacao_id: parseInt(id) });
+        enviarESP32(parseInt(id), { comando: 'INICIAR_LEITURA', estacao_id: parseInt(id) });
         } else {
-        enviarESP32({ comando: 'PARAR_LEITURA', estacao_id: parseInt(id) });
+        enviarESP32(parseInt(id), { comando: 'PARAR_LEITURA', estacao_id: parseInt(id) });
         }
 
         return res.json({ ok: true });
