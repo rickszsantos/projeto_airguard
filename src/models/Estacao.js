@@ -73,6 +73,10 @@ class Estacao{
 
 
 
+    excluir(id) {
+    db.prepare("DELETE FROM estacoes WHERE id = ?").run(id);
+    }
+
 
 
 

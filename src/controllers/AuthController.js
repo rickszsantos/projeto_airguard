@@ -1,4 +1,5 @@
 const bcrypt  = require('bcrypt');
+const { podeFazer } = require('../middlewares/VerificarSessao');
 const Usuario = require('../models/Usuario');
 const Leitura = require('../models/Leitura');
 const Estacao = require('../models/Estacao');
@@ -6,9 +7,11 @@ const Estacao = require('../models/Estacao');
 class AuthController {
  
   _ctx(req) {
+        const perfil = req.session.usuarioPerfil || 'funcionario';
         return {
-            usuario: req.session.usuarioNome   || 'Usuário',
-            perfil:  req.session.usuarioPerfil || 'funcionario'
+            usuario: req.session.usuarioNome || 'Usuário',
+            perfil,
+            pode: (acao) => podeFazer(perfil, acao)
         };
     }
 
@@ -106,4 +109,5 @@ class AuthController {
 }
  
 module.exports = new AuthController();
+
 

@@ -181,7 +181,7 @@
                         </svg>
                         <input type="text" placeholder="Buscar estação..." id="busca-input"/>
                     </div>
-                    <button class="btn-nova">+ Nova Estação</button>
+                    <button class="btn-nova" onclick="abrirModal()">+ Nova Estação</button>
                 </div>
             </div>
 
@@ -313,6 +313,115 @@
     </div>
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+<div class="modal-overlay" id="modal-estacao">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div class="modal-header-info">
+                <div class="modal-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2"/>
+                        <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="modal-title">Nova Estação</p>
+                    <p class="modal-sub">Preencha os dados para cadastrar</p>
+                </div>
+            </div>
+            <button class="modal-fechar" onclick="fecharModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+
+            <div class="modal-field">
+                <label>Nome da estação <span class="obrigatorio">*</span></label>
+                <input type="text" id="m-nome" placeholder="Ex: Sala Principal"/>
+            </div>
+
+            <div class="modal-field">
+                <label>Descrição</label>
+                <input type="text" id="m-desc" placeholder="Opcional"/>
+            </div>
+
+            <div class="modal-linha-dupla">
+                <div class="modal-field">
+                    <label>Latitude</label>
+                    <input type="number" id="m-lat" placeholder="-23.5505" step="0.0001"/>
+                </div>
+                <div class="modal-field">
+                    <label>Longitude</label>
+                    <input type="number" id="m-lng" placeholder="-46.6333" step="0.0001"/>
+                </div>
+            </div>
+
+            <div class="modal-field">
+                <label>Intervalo de leitura (segundos)</label>
+                <div class="modal-intervalo">
+                    <input type="number" id="m-intervalo" value="5" min="1"/>
+                    <span class="modal-unit">segundos</span>
+                </div>
+            </div>
+
+            <!-- info sobre sensores criados automaticamente -->
+            <div class="modal-info">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                Os sensores <strong>DHT22</strong>, <strong>MQ7</strong> e <strong>MQ135</strong> serão cadastrados automaticamente.
+            </div>
+
+            <div class="modal-erro" id="modal-erro" style="display:none"></div>
+
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+            <button class="btn-salvar-modal" id="btn-salvar-estacao" onclick="salvarEstacao()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                Salvar Estação
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/permissao.js"></script>
+
+
+
+
 <script>
 
 function toggleUserMenu() {
@@ -349,7 +458,7 @@ function botoeEstacao(id, status) {
     const btnToggle = ativa
         ? '<button class="btn-acao btn-desativar" onclick="alterarStatus(' + id + ',\'inativa\',this)">⏻ Desativar</button>'
         : '<button class="btn-acao btn-ativar"    onclick="alterarStatus(' + id + ',\'ativa\',this)">⏻ Ativar</button>';
-    return '<button class="btn-acao btn-editar"      onclick="editarEstacao(' + id + ')">✏ Editar</button>'
+    return '<button class="btn-acao btn-excluir" onclick="excluirEstacao(' + id + ')">🗑 Excluir</button>'
          + '<button class="btn-acao btn-configurar"  onclick="location.href=\'/configuracoes?estacao_id=' + id + '\'">⚙ Configurar</button>'
          + btnToggle;
 }
@@ -507,6 +616,105 @@ document.addEventListener('click', e => {
 async function logout() {
     await fetch('/logout', { method: 'POST' });
     window.location.href = '/login';
+}
+
+
+
+
+
+
+//carregar a tela de cadastrar estações
+function abrirModal() {
+    document.getElementById('modal-estacao').classList.add('aberto');
+    document.getElementById('m-nome').focus();
+}
+
+function fecharModal() {
+    document.getElementById('modal-estacao').classList.remove('aberto');
+    // limpa os campos
+    document.getElementById('m-nome').value      = '';
+    document.getElementById('m-desc').value      = '';
+    document.getElementById('m-lat').value       = '';
+    document.getElementById('m-lng').value       = '';
+    document.getElementById('m-intervalo').value = '5';
+    // esconde o erro
+    const err = document.getElementById('modal-erro');
+    if (err) { err.textContent = ''; err.style.display = 'none'; }
+}
+
+// fecha ao clicar no overlay
+document.getElementById('modal-estacao')?.addEventListener('click', function(e) {
+    if (e.target === this) fecharModal();
+});
+
+// fecha com ESC
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharModal();
+});
+
+async function salvarEstacao() {
+    const nome      = document.getElementById('m-nome').value.trim();
+    const descricao = document.getElementById('m-desc').value.trim();
+    const latitude  = document.getElementById('m-lat').value;
+    const longitude = document.getElementById('m-lng').value;
+    const intervalo = document.getElementById('m-intervalo').value;
+
+    // validação
+    if (!nome) {
+        const err = document.getElementById('modal-erro');
+        err.textContent    = 'O nome da estação é obrigatório.';
+        err.style.display  = 'block';
+        document.getElementById('m-nome').focus();
+        return;
+    }
+
+    // desabilita o botão para evitar duplo clique
+    const btn = document.getElementById('btn-salvar-estacao');
+    if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+
+    try {
+        const res = await fetch('/api/estacoes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome, descricao, latitude, longitude, intervalo })
+});
+
+        const json = await res.json();
+
+        if (res.ok) {
+            fecharModal();
+            carregarSensores(); // recarrega a lista sem recarregar a página
+        } else {
+            const err = document.getElementById('modal-erro');
+            err.textContent   = json.erro || 'Erro ao salvar estação.';
+            err.style.display = 'block';
+        }
+    } catch (e) {
+        console.error(e);
+        const err = document.getElementById('modal-erro');
+        err.textContent   = 'Erro de conexão. Tente novamente.';
+        err.style.display = 'block';
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Salvar Estação'; }
+    }
+}
+
+
+
+function excluirEstacao(id) {
+    confirmarSuperAdmin({
+        titulo: 'Excluir Estação?',
+        texto: 'Todos os sensores e leituras serão removidos.',
+        btnLabel: '🗑 Excluir',
+        onConfirm: async (senha) => {
+            await apiProtegida(`/api/estacoes/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ senha_superadmin: senha })
+            });
+            carregarSensores();
+        }
+    });
 }
 
 

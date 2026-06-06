@@ -31,6 +31,9 @@ class Usuario {
   }
 
 
+  buscarSuperAdmin() {
+    return db.prepare("SELECT * FROM usuarios WHERE perfil = 'superadmin' LIMIT 1").get() ?? null;
+  }
 
 
   

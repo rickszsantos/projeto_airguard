@@ -4,46 +4,53 @@ const { enviarESP32 } = require('../utils/esp32');
 
 class EstacaoController {
 
-    listarEstacoes(req, res) {
-
-
-
-console.log('>>> entrou no listarEstacoes');
-const estacoes = Estacao.listarComSensores();
-console.log('>>> estacoes ok', estacoes.length);
-const resumo = Estacao.resumo();
-console.log('>>> resumo ok');
-let leituras_hoje = 0;
-try {
-    leituras_hoje = Estacao.leiturasdiarias();
-    console.log('>>> leituras_hoje:', leituras_hoje);
-} catch (err) {
-    console.error('>>> ERRO leiturasdiarias:', err);
-}
-console.log('>>> json final:', { leituras_hoje });
-
-
-
-
+   listarEstacoes(req, res) {
         try {
             const estacoes    = Estacao.listarComSensores();
             const resumo      = Estacao.resumo();
-
-            // leituras de hoje usando a tabela historico
-            let leituras_hoje = 0;
-            try {
-                leituras_hoje = Estacao.leiturasdiarias();
-                console.log(leituras_hoje);
-                
-            } catch (err) {console.error('[leiturasdiarias ERROR]', err);
-
-            }
-
-
+            const leituras_hoje = Estacao.leiturasdiarias();
             return res.json({ estacoes, resumo, leituras_hoje });
         } catch (err) {
             console.error('[listarEstacoes]', err);
-            return res.status(500).json({ estacoes: [], resumo: {}, leituras_hoje: {} });
+            return res.status(500).json({ estacoes: [], resumo: {}, leituras_hoje: 0 });
+        }
+    }
+
+
+
+
+
+    criarEstacao(req, res) {
+        const { nome, descricao, latitude, longitude, intervalo } = req.body;
+
+        if (!nome || nome.trim() === '')
+            return res.status(400).json({ erro: 'Nome da estação é obrigatório' });
+
+        try {
+            // 1 — cria a estação
+            const result = Estacao.criar(
+                nome.trim(),
+                descricao?.trim() || null,
+                latitude  ? parseFloat(latitude)  : null,
+                longitude ? parseFloat(longitude) : null,
+                intervalo ? parseInt(intervalo) * 1000 : 5000
+            );
+
+            const estacaoId = result.lastInsertRowid;
+
+            // 2 — cria os 3 sensores padrão vinculados à estação
+            Estacao.criarSensor(estacaoId, 'DHT22', 'Temperatura e Umidade');
+            Estacao.criarSensor(estacaoId, 'MQ7',   'Monóxido de Carbono');
+            Estacao.criarSensor(estacaoId, 'MQ135', 'Qualidade do Ar Geral');
+
+            return res.status(201).json({
+                ok: true,
+                id: estacaoId,
+                mensagem: `Estação "${nome}" criada com 3 sensores padrão`
+            });
+        } catch (err) {
+            console.error('[criarEstacao]', err);
+            return res.status(500).json({ erro: 'Erro ao criar estação' });
         }
     }
 
@@ -73,12 +80,75 @@ console.log('>>> json final:', { leituras_hoje });
 
 
 
+    editarEstacao(req, res) {
+        const { id } = req.params;
+        const { nome, descricao, latitude, longitude } = req.body;
+        if (!nome?.trim())
+            return res.status(400).json({ erro: 'Nome é obrigatório' });
+        try {
+            db.prepare(`
+                UPDATE estacoes SET nome=?, descricao=?, latitude=?, longitude=?, updated_at=CURRENT_TIMESTAMP
+                WHERE id=?
+            `).run(nome.trim(), descricao || null, latitude || null, longitude || null, id);
+            return res.json({ ok: true });
+        } catch (err) {
+            return res.status(500).json({ erro: 'Erro ao editar estação' });
+        }
+    }
+
+
+
+
     
+    excluirEstacao(req, res) {
+    const { id }    = req.params;
+    const { senha_superadmin } = req.body;
+
+    if (!senha_superadmin)
+        return res.status(400).json({ erro: 'Senha obrigatória' });
+
+    // verifica se a senha pertence a um superadmin
+    const bcrypt  = require('bcrypt');
+    const Usuario = require('../models/Usuario');
+
+    const superadmin = Usuario.buscarSuperAdmin();
+
+    if (!superadmin)
+        return res.status(403).json({ erro: 'Nenhum SuperAdmin cadastrado' });
+
+    bcrypt.compare(senha_superadmin, superadmin.senha, (err, ok) => {
+        if (!ok)
+            return res.status(403).json({ erro: 'Senha incorreta' });
+
+        Estacao.excluir(id);
+        return res.json({ ok: true, mensagem: 'Estação excluída com sucesso' });
+    });
+    }
 
 
 
 
 
+
+
+
+
+    atualizarIntervalo(req, res) {
+        const { id } = req.params;
+        const { intervalo } = req.body;
+        const ms = parseInt(intervalo) * 1000;
+        if (isNaN(ms) || ms < 1000)
+            return res.status(400).json({ erro: 'Intervalo mínimo: 1 segundo' });
+        try {
+            db.prepare('UPDATE estacoes SET intervalo_leitura=?, updated_at=CURRENT_TIMESTAMP WHERE id=?').run(ms, id);
+            enviarESP32(parseInt(id), { comando: 'SET_INTERVALO', intervalo: ms });
+            return res.json({ ok: true, intervalo_ms: ms });
+        } catch (err) {
+            return res.status(500).json({ erro: 'Erro ao atualizar intervalo' });
+        }
+    }
+
+    
 
 
 }
