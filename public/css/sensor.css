@@ -699,3 +699,25 @@ a.nav-item.active svg { opacity: 1; }
 
 .btn-excluir-confirm:hover    { background: #b91c1c; }
 .btn-excluir-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+
+
+
+.btn-editar { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+.btn-editar:hover { background: #dbeafe; opacity: 1; }
+
+/* botão com aparência de sem permissão */
+.btn-acao.sem-permissao {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.btn-acao.sem-permissao:hover { opacity: 0.45; }
+
+/* botão confirmar exclusão */
+.btn-excluir-confirm {
+    background: #dc2626; border: none; border-radius: 10px;
+    padding: 10px 20px; font-family: 'Nunito', sans-serif;
+    font-size: 14px; font-weight: 700; color: #fff;
+    cursor: pointer; transition: background 0.15s;
+}
+.btn-excluir-confirm:hover    { background: #b91c1c; }
+.btn-excluir-confirm:disabled { opacity: 0.6; cursor: not-allowed; }

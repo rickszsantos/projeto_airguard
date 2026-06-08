@@ -83,15 +83,25 @@ class EstacaoController {
     editarEstacao(req, res) {
         const { id } = req.params;
         const { nome, descricao, latitude, longitude } = req.body;
+
         if (!nome?.trim())
             return res.status(400).json({ erro: 'Nome é obrigatório' });
+
         try {
             db.prepare(`
-                UPDATE estacoes SET nome=?, descricao=?, latitude=?, longitude=?, updated_at=CURRENT_TIMESTAMP
+                UPDATE estacoes
+                SET nome=?, descricao=?, latitude=?, longitude=?, updated_at=CURRENT_TIMESTAMP
                 WHERE id=?
-            `).run(nome.trim(), descricao || null, latitude || null, longitude || null, id);
+            `).run(
+                nome.trim(),
+                descricao?.trim() || null,
+                latitude  !== '' && latitude  != null ? parseFloat(latitude)  : null,
+                longitude !== '' && longitude != null ? parseFloat(longitude) : null,
+                id
+            );
             return res.json({ ok: true });
         } catch (err) {
+            console.error('[editarEstacao]', err);
             return res.status(500).json({ erro: 'Erro ao editar estação' });
         }
     }
@@ -100,29 +110,15 @@ class EstacaoController {
 
 
     
-    excluirEstacao(req, res) {
-    const { id }    = req.params;
-    const { senha_superadmin } = req.body;
-
-    if (!senha_superadmin)
-        return res.status(400).json({ erro: 'Senha obrigatória' });
-
-    // verifica se a senha pertence a um superadmin
-    const bcrypt  = require('bcrypt');
-    const Usuario = require('../models/Usuario');
-
-    const superadmin = Usuario.buscarSuperAdmin();
-
-    if (!superadmin)
-        return res.status(403).json({ erro: 'Nenhum SuperAdmin cadastrado' });
-
-    bcrypt.compare(senha_superadmin, superadmin.senha, (err, ok) => {
-        if (!ok)
-            return res.status(403).json({ erro: 'Senha incorreta' });
-
-        Estacao.excluir(id);
-        return res.json({ ok: true, mensagem: 'Estação excluída com sucesso' });
-    });
+    async excluirEstacao(req, res) {
+        const { id } = req.params;
+        try {
+            Estacao.excluir(id);
+            return res.json({ ok: true, mensagem: 'Estação excluída com sucesso' });
+        } catch (err) {
+            console.error('[excluirEstacao]', err);
+            return res.status(500).json({ erro: 'Erro ao excluir estação' });
+        }
     }
 
 

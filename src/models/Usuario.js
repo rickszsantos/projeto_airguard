@@ -14,6 +14,12 @@ class Usuario {
 
 
 
+  listarTodos() {
+    return  db.prepare('SELECT id, nome, email, perfil FROM usuarios order by created_at desc').all();
+  }
+
+
+
 
   // Verifica se email já existe
   emailExiste(email) {

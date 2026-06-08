@@ -14,6 +14,6 @@ router.patch ('/estacoes/:id/status',         verificarSessao, verPermissao('est
 router.patch ('/estacoes/:id/intervalo',      verificarSessao, verPermissao('estacao:intervalo'),EstacaoController.atualizarIntervalo.bind(EstacaoController));
 
 // Só superadmin (verifica senha no body)
-router.delete('/estacoes/:id',                verificarSessao, verSenhaAdmin('estacao:excluir'), EstacaoController.excluirEstacao.bind(EstacaoController));
+router.delete('/estacoes/:id',                verificarSessao, verPermissao('estacao:excluir'), EstacaoController.excluirEstacao.bind(EstacaoController));
 
 module.exports = router;

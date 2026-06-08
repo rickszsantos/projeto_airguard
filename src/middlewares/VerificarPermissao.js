@@ -9,7 +9,7 @@ const PERMISSOES = {
     // Estações
     'estacao:criar':           'admin',
     'estacao:editar':          'admin',
-    'estacao:excluir':         'superadmin',
+    'estacao:excluir':         'admin',
     'estacao:status':          'admin',
     'estacao:intervalo':       'admin',
 

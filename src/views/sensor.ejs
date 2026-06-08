@@ -181,7 +181,7 @@
                         </svg>
                         <input type="text" placeholder="Buscar estação..." id="busca-input"/>
                     </div>
-                    <button class="btn-nova" onclick="abrirModal()">+ Nova Estação</button>
+                    <button class="btn-nova" id="btn-nova-estacao" onclick="tentarCriarEstacao()">+ Nova Estação</button>
                 </div>
             </div>
 
@@ -407,8 +407,124 @@
 
 
 
+<div class="modal-overlay" id="modal-editar">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div class="modal-header-info">
+                <div class="modal-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="modal-title">Editar Estação</p>
+                    <p class="modal-sub" id="editar-sub">Altere os dados da estação</p>
+                </div>
+            </div>
+            <button class="modal-fechar" onclick="fecharEditar()">✕</button>
+        </div>
+
+        <div class="modal-body">
+
+            <input type="hidden" id="editar-id"/>
+
+            <div class="modal-field">
+                <label>Nome da estação <span class="obrigatorio">*</span></label>
+                <input type="text" id="editar-nome" placeholder="Ex: Sala Principal"/>
+            </div>
+
+            <div class="modal-field">
+                <label>Descrição</label>
+                <input type="text" id="editar-desc" placeholder="Opcional"/>
+            </div>
+
+            <div class="modal-linha-dupla">
+                <div class="modal-field">
+                    <label>Latitude</label>
+                    <input type="number" id="editar-lat" placeholder="-23.5505" step="0.0001"/>
+                </div>
+                <div class="modal-field">
+                    <label>Longitude</label>
+                    <input type="number" id="editar-lng" placeholder="-46.6333" step="0.0001"/>
+                </div>
+            </div>
+
+            <div class="modal-field">
+                <label>Intervalo de leitura (segundos)</label>
+                <div class="modal-intervalo">
+                    <input type="number" id="editar-intervalo" value="5" min="1"/>
+                    <span class="modal-unit">segundos</span>
+                </div>
+            </div>
+
+            <div class="modal-info" id="editar-info-permissao" style="display:none; background:#fff7ed; border-color:#fed7aa; color:#b45309">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                </svg>
+                <span>Você não tem permissão para editar estações. Necessário nível Admin ou superior.</span>
+            </div>
+
+            <div class="modal-erro" id="editar-erro" style="display:none"></div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancelar" onclick="fecharEditar()">Cancelar</button>
+            <button class="btn-salvar-modal" id="btn-salvar-editar" onclick="salvarEdicao()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/>
+                    <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                Salvar Alterações
+            </button>
+        </div>
+
+    </div>
+</div>
 
 
+
+
+<div class="modal-overlay" id="modal-excluir">
+    <div class="modal-box" style="max-width:420px">
+        <div class="modal-header">
+            <div class="modal-header-info">
+                <div class="modal-icon" style="background:#fee2e2; color:#dc2626">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                        <path d="M10 11v6M14 11v6"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="modal-title" style="color:#dc2626">Excluir Estação</p>
+                    <p class="modal-sub" id="excluir-nome-estacao">Esta ação não pode ser desfeita</p>
+                </div>
+            </div>
+            <button class="modal-fechar" onclick="fecharExcluir()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-info" style="background:#fff5f5; border-color:#fecaca; color:#dc2626">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Todos os sensores e leituras serão removidos permanentemente.
+            </div>
+            <div class="modal-erro" id="excluir-erro" style="display:none"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancelar" onclick="fecharExcluir()">Cancelar</button>
+            <button class="btn-excluir-confirm" id="btn-confirmar-excluir" onclick="confirmarExclusao()">
+                🗑 Confirmar Exclusão
+            </button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -418,16 +534,26 @@
 
 
 <script src="/js/permissao.js"></script>
-
-
-
-
 <script>
+// ══════════════════════════════════════════════════════
+const PERFIL_USUARIO = '<%= typeof perfil !== "undefined" ? perfil : "funcionario" %>';
+const NIVEL          = { funcionario: 1, admin: 2, superadmin: 3 };
+const podeEditar     = (NIVEL[PERFIL_USUARIO] || 0) >= NIVEL['admin'];
+const podeExcluir    = (NIVEL[PERFIL_USUARIO] || 0) >= NIVEL['admin'];
+const podeStatus     = (NIVEL[PERFIL_USUARIO] || 0) >= NIVEL['admin'];
 
+function temPermissao(nivelMinimo) {
+    return (NIVEL[PERFIL_USUARIO] || 0) >= (NIVEL[nivelMinimo] || 99);
+}
+
+// ══════════════════════════════════════════════════════
+// MENU DO USUÁRIO
+// ══════════════════════════════════════════════════════
 function toggleUserMenu() {
     document.getElementById('user-btn').classList.toggle('open');
     document.getElementById('user-dd').classList.toggle('open');
 }
+
 document.addEventListener('click', e => {
     const w = document.querySelector('.user-wrapper');
     if (w && !w.contains(e.target)) {
@@ -436,42 +562,103 @@ document.addEventListener('click', e => {
     }
 });
 
+async function logout() {
+    await fetch('/logout', { method: 'POST' });
+    window.location.href = '/login';
+}
 
+// ══════════════════════════════════════════════════════
+// TOAST DE AVISO DE PERMISSÃO
+// ══════════════════════════════════════════════════════
+function mostrarAvisoPermissao(mensagem) {
+    let toast = document.getElementById('toast-permissao');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-permissao';
+        toast.style.cssText = `
+            position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+            background:#1e3a5f; color:#fff; padding:12px 24px; border-radius:10px;
+            font-family:Nunito,sans-serif; font-size:13px; font-weight:700;
+            box-shadow:0 4px 20px rgba(0,0,0,0.2); z-index:9999;
+            opacity:0; transition:opacity 0.2s;
+            display:flex; align-items:center; gap:10px;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        ${mensagem}
+    `;
+    toast.style.opacity = '1';
+    setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+}
 
-
-// ── Estações ─────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// ESTAÇÕES — renderização
+// ══════════════════════════════════════════════════════
 const API_ESTACOES = '/api/estacoes';
 
 function statusBadge(status) {
-    const map = { 'ativa': { label:'Ativa', cls:'badge-ativa' }, 'inativa': { label:'Inativa', cls:'badge-inativa' }, 'manutencao': { label:'Manutenção', cls:'badge-manutencao' } };
+    const map = {
+        'ativa':      { label:'Ativa',      cls:'badge-ativa' },
+        'inativa':    { label:'Inativa',    cls:'badge-inativa' },
+        'manutencao': { label:'Manutenção', cls:'badge-manutencao' }
+    };
     const s = map[status?.toLowerCase()] ?? { label: status, cls: 'badge-inativa' };
     return `<span class="status-badge ${s.cls}">${s.label}</span>`;
 }
 
 function sensorStatusDot(status) {
     const ativo = status?.toLowerCase() === 'ativo';
-    return `<span class="sensor-dot ${ativo ? 'dot-ativo' : 'dot-inativo'}"></span><span class="${ativo ? 'text-ativo' : 'text-inativo'}">${ativo ? 'Ativo' : 'Inativo'}</span>`;
+    return `<span class="sensor-dot ${ativo?'dot-ativo':'dot-inativo'}"></span>
+            <span class="${ativo?'text-ativo':'text-inativo'}">${ativo?'Ativo':'Inativo'}</span>`;
 }
 
-function botoeEstacao(id, status) {
+function iconEstacao(nome) {
+    return `<div class="estacao-icon" style="background:#2563eb22; border:2px solid #2563eb44">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+        </svg>
+    </div>`;
+}
+
+function botoeEstacao(id, status, est) {
     const ativa = (status || '').toLowerCase() === 'ativa';
-    const btnToggle = ativa
-        ? '<button class="btn-acao btn-desativar" onclick="alterarStatus(' + id + ',\'inativa\',this)">⏻ Desativar</button>'
-        : '<button class="btn-acao btn-ativar"    onclick="alterarStatus(' + id + ',\'ativa\',this)">⏻ Ativar</button>';
-    return '<button class="btn-acao btn-excluir" onclick="excluirEstacao(' + id + ')">🗑 Excluir</button>'
-         + '<button class="btn-acao btn-configurar"  onclick="location.href=\'/configuracoes?estacao_id=' + id + '\'">⚙ Configurar</button>'
-         + btnToggle;
-}
 
-function iconEstacao(tipo) {
-    const icons = { 'centro':'#2563eb', 'industrial':'#f59e0b', 'parque':'#22c55e', 'norte':'#94a3b8' };
-    const cor = icons[tipo?.toLowerCase()] ?? '#2563eb';
-    return `<div class="estacao-icon" style="background:${cor}22; border:2px solid ${cor}44"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="${cor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>`;
+    // ativar/desativar — só admin ou superior
+    let btnToggle;
+    if (podeStatus) {
+        btnToggle = ativa
+            ? `<button class="btn-acao btn-desativar" onclick="alterarStatus(${id},'inativa',this)">⏻ Desativar</button>`
+            : `<button class="btn-acao btn-ativar"    onclick="alterarStatus(${id},'ativa',this)">⏻ Ativar</button>`;
+    } else {
+        btnToggle = ativa
+            ? `<button class="btn-acao btn-desativar sem-permissao" onclick="mostrarAvisoPermissao('Desativar estações requer nível Admin ou superior.')">⏻ Desativar</button>`
+            : `<button class="btn-acao btn-ativar sem-permissao"    onclick="mostrarAvisoPermissao('Ativar estações requer nível Admin ou superior.')">⏻ Ativar</button>`;
+    }
+
+    // editar — admin ou superior
+    const btnEditar = podeEditar
+        ? `<button class="btn-acao btn-editar"  onclick='abrirEditar(${JSON.stringify(est)})'>✏ Editar</button>`
+        : `<button class="btn-acao btn-editar sem-permissao" onclick="mostrarAvisoPermissao('Editar estações requer nível Admin ou superior.')" title="Sem permissão">✏ Editar</button>`;
+
+    // excluir — admin ou superior
+    const btnExcluir = podeExcluir
+        ? `<button class="btn-acao btn-excluir" onclick="abrirModalExcluir(${id}, '${(est.nome||'').replace(/'/g,"\\'")}')">🗑 Excluir</button>`
+        : `<button class="btn-acao btn-excluir sem-permissao" onclick="mostrarAvisoPermissao('Excluir estações requer nível Admin ou superior.')" title="Sem permissão">🗑 Excluir</button>`;
+
+    return btnEditar + btnExcluir + btnToggle;
 }
 
 function renderEstacoes(estacoes) {
     const lista = document.getElementById('estacoes-lista');
-    if (!estacoes || estacoes.length === 0) { lista.innerHTML = '<div class="loading-msg">Nenhuma estação encontrada.</div>'; return; }
+    if (!estacoes || estacoes.length === 0) {
+        lista.innerHTML = '<div class="loading-msg">Nenhuma estação encontrada.</div>';
+        return;
+    }
     lista.innerHTML = estacoes.map(est => `
         <div class="estacao-card">
             <div class="estacao-esq">
@@ -480,23 +667,25 @@ function renderEstacoes(estacoes) {
                     <div class="estacao-nome-row"><strong>${est.nome}</strong>${statusBadge(est.status)}</div>
                     <div class="estacao-meta">ID: ${est.id ?? '--'}</div>
                     <div class="estacao-meta">📍 ${est.latitude ?? '--'}, ${est.longitude ?? '--'}</div>
-                    <div class="estacao-meta">Intervalo de leitura: ${est.intervalo_leitura ?? '5000'} segundos</div>
-                    <div class="estacao-meta">Última leitura: <span class="ultima-leitura">--</span></div>
+                    <div class="estacao-meta">Intervalo: ${(est.intervalo_leitura || 5000) / 1000}s</div>
+                    ${est.descricao ? `<div class="estacao-meta">📝 ${est.descricao}</div>` : ''}
                 </div>
             </div>
             <div class="estacao-dir">
                 <div class="sensores-lista-inline">
                     <div class="sensores-header">Sensores</div>
-                    ${(est.sensores && est.sensores.length > 0 ? est.sensores : [
+                    ${(est.sensores?.length > 0 ? est.sensores : [
                         { tipo:'DHT22', descricao:'Temperatura e Umidade', status: est.status==='ativa'?'ativo':'inativo' },
                         { tipo:'MQ7',   descricao:'Monóxido de Carbono',   status: est.status==='ativa'?'ativo':'inativo' },
                         { tipo:'MQ135', descricao:'Qualidade do Ar',       status: est.status==='ativa'?'ativo':'inativo' },
-                    ]).map(s => {
-                        const label = s.tipo ? `${s.tipo}${s.descricao ? ' — '+s.descricao : ''}` : (s.nome ?? 'Sensor');
-                        return `<div class="sensor-row"><span class="sensor-nome">${label}</span><span class="sensor-status">${sensorStatusDot(s.status)}</span><span class="sensor-hora">-</span><span class="sensor-arrow">›</span></div>`;
-                    }).join('')}
+                    ]).map(s => `
+                        <div class="sensor-row">
+                            <span class="sensor-nome">${s.tipo}${s.descricao?' — '+s.descricao:''}</span>
+                            <span class="sensor-status">${sensorStatusDot(s.status)}</span>
+                            <span class="sensor-hora">-</span>
+                        </div>`).join('')}
                 </div>
-                <div class="estacao-botoes">${botoeEstacao(est.id, est.status)}</div>
+                <div class="estacao-botoes">${botoeEstacao(est.id, est.status, est)}</div>
             </div>
         </div>`).join('');
     document.getElementById('page-info').textContent = `Mostrando 1 a ${estacoes.length} de ${estacoes.length} estações`;
@@ -504,36 +693,41 @@ function renderEstacoes(estacoes) {
 
 async function carregarSensores() {
     try {
-        const res = await fetch(API_ESTACOES);
-        const json = await res.json();
+        const res      = await fetch(API_ESTACOES);
+        const json     = await res.json();
         const estacoes = json.estacoes ?? json;
-        const ativas = estacoes.filter(e => e.status?.toLowerCase() === 'ativa').length;
+        const ativas   = estacoes.filter(e => e.status?.toLowerCase() === 'ativa').length;
+
         document.getElementById('estacoes-ativas').textContent = ativas;
         document.getElementById('estacoes-total').textContent  = `de ${estacoes.length} estações`;
         document.getElementById('sensores-ativos').textContent = ativas * 3;
         document.getElementById('sensores-total').textContent  = `de ${estacoes.length * 3} sensores`;
-        document.getElementById('leituras-hoje').textContent   = json.leituras_hoje ?? '00';//-------------------------------------------------------------
+        document.getElementById('leituras-hoje').textContent   = json.leituras_hoje ?? '0';
+
         renderEstacoes(estacoes);
     } catch (err) {
-        document.getElementById('estacoes-lista').innerHTML = '<div class="loading-msg">Erro ao carregar dados. Verifique a API.</div>';
+        document.getElementById('estacoes-lista').innerHTML = '<div class="loading-msg">Erro ao carregar dados.</div>';
     }
 }
 
-carregarSensores();
-
-async function alterarStatus(id, novoStatus, btn) {
+async function alterarStatus(id, novoStatus) {
+    if (!podeStatus) {
+        mostrarAvisoPermissao('Alterar status requer nível Admin ou superior.');
+        return;
+    }
     try {
-        await fetch(`/api/estacoes/${id}/status`, {
-            method: 'PATCH',
+        const res = await fetch(`/api/estacoes/${id}/status`, {
+            method:  'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: novoStatus })
+            body:    JSON.stringify({ status: novoStatus })
         });
-        carregarSensores(); // recarrega tudo
-    } catch (e) { alert('Erro ao atualizar status'); }
-}
-
-function editarEstacao(id) {
-    location.href = '/configuracoes?estacao_id=' + id;
+        if (!res.ok) {
+            const json = await res.json();
+            mostrarAvisoPermissao(json.erro || 'Erro ao atualizar status.');
+            return;
+        }
+        carregarSensores();
+    } catch (e) { mostrarAvisoPermissao('Erro de conexão.'); }
 }
 
 document.getElementById('busca-input').addEventListener('input', function() {
@@ -544,7 +738,214 @@ document.getElementById('busca-input').addEventListener('input', function() {
     });
 });
 
-// ── Alertas ──────────────────────────────────────────────
+// ══════════════════════════════════════════════════════
+// MODAL — CRIAR ESTAÇÃO
+// ══════════════════════════════════════════════════════
+function tentarCriarEstacao() {
+    if (!temPermissao('admin')) {
+        mostrarAvisoPermissao('Criar estações requer nível Admin ou superior.');
+        return;
+    }
+    abrirModal();
+}
+
+function abrirModal() {
+    document.getElementById('modal-estacao').classList.add('aberto');
+    document.getElementById('m-nome').focus();
+}
+
+function fecharModal() {
+    document.getElementById('modal-estacao').classList.remove('aberto');
+    ['m-nome','m-desc','m-lat','m-lng'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('m-intervalo').value = '5';
+    const err = document.getElementById('modal-erro');
+    if (err) { err.textContent = ''; err.style.display = 'none'; }
+}
+
+document.getElementById('modal-estacao')?.addEventListener('click', function(e) {
+    if (e.target === this) fecharModal();
+});
+
+async function salvarEstacao() {
+    const nome      = document.getElementById('m-nome').value.trim();
+    const descricao = document.getElementById('m-desc').value.trim();
+    const latitude  = document.getElementById('m-lat').value;
+    const longitude = document.getElementById('m-lng').value;
+    const intervalo = document.getElementById('m-intervalo').value;
+    const err       = document.getElementById('modal-erro');
+    const btn       = document.getElementById('btn-salvar-estacao');
+
+    if (!nome) {
+        err.textContent   = 'O nome da estação é obrigatório.';
+        err.style.display = 'block';
+        document.getElementById('m-nome').focus();
+        return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Salvando...';
+
+    try {
+        const res  = await fetch('/api/estacoes', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ nome, descricao, latitude, longitude, intervalo })
+        });
+        const json = await res.json();
+
+        if (res.ok) { fecharModal(); carregarSensores(); }
+        else { err.textContent = json.erro || 'Erro ao salvar.'; err.style.display = 'block'; }
+    } catch (e) {
+        err.textContent   = 'Erro de conexão.';
+        err.style.display = 'block';
+    } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Salvar Estação';
+    }
+}
+
+// ══════════════════════════════════════════════════════
+// MODAL — EDITAR ESTAÇÃO
+// ══════════════════════════════════════════════════════
+function abrirEditar(estacao) {
+    document.getElementById('editar-id').value        = estacao.id;
+    document.getElementById('editar-nome').value      = estacao.nome      || '';
+    document.getElementById('editar-desc').value      = estacao.descricao || '';
+    document.getElementById('editar-lat').value       = estacao.latitude  || '';
+    document.getElementById('editar-lng').value       = estacao.longitude || '';
+    document.getElementById('editar-intervalo').value = Math.round((estacao.intervalo_leitura || 5000) / 1000);
+    document.getElementById('editar-sub').textContent = `ID: ${estacao.id} — ${estacao.nome}`;
+    document.getElementById('editar-erro').style.display = 'none';
+
+    const semPermissao = document.getElementById('editar-info-permissao');
+    const btnSalvar    = document.getElementById('btn-salvar-editar');
+
+    if (!podeEditar) {
+        semPermissao.style.display = 'flex';
+        btnSalvar.style.display    = 'none';
+        ['editar-nome','editar-desc','editar-lat','editar-lng','editar-intervalo']
+            .forEach(id => document.getElementById(id).disabled = true);
+    } else {
+        semPermissao.style.display = 'none';
+        btnSalvar.style.display    = 'flex';
+        ['editar-nome','editar-desc','editar-lat','editar-lng','editar-intervalo']
+            .forEach(id => document.getElementById(id).disabled = false);
+    }
+
+    document.getElementById('modal-editar').classList.add('aberto');
+    if (podeEditar) setTimeout(() => document.getElementById('editar-nome').focus(), 100);
+}
+
+function fecharEditar() {
+    document.getElementById('modal-editar').classList.remove('aberto');
+}
+
+document.getElementById('modal-editar')?.addEventListener('click', function(e) {
+    if (e.target === this) fecharEditar();
+});
+
+async function salvarEdicao() {
+    const id        = document.getElementById('editar-id').value;
+    const nome      = document.getElementById('editar-nome').value.trim();
+    const descricao = document.getElementById('editar-desc').value.trim();
+    const latitude  = document.getElementById('editar-lat').value;
+    const longitude = document.getElementById('editar-lng').value;
+    const intervalo = document.getElementById('editar-intervalo').value;
+    const erro      = document.getElementById('editar-erro');
+    const btn       = document.getElementById('btn-salvar-editar');
+
+    if (!nome) {
+        erro.textContent   = 'O nome da estação é obrigatório.';
+        erro.style.display = 'block';
+        document.getElementById('editar-nome').focus();
+        return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Salvando...';
+
+    try {
+        const res = await fetch(`/api/estacoes/${id}`, {
+            method:  'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ nome, descricao, latitude, longitude })
+        });
+
+        if (!res.ok) {
+            const json = await res.json();
+            erro.textContent   = json.erro || 'Erro ao salvar.';
+            erro.style.display = 'block';
+            return;
+        }
+
+        // atualiza intervalo separado
+        await fetch(`/api/estacoes/${id}/intervalo`, {
+            method:  'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ intervalo })
+        });
+
+        fecharEditar();
+        carregarSensores();
+    } catch (e) {
+        erro.textContent   = 'Erro de conexão.';
+        erro.style.display = 'block';
+    } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Salvar Alterações';
+    }
+}
+
+// ══════════════════════════════════════════════════════
+// MODAL — EXCLUIR ESTAÇÃO
+// ══════════════════════════════════════════════════════
+let estacaoParaExcluir = null;
+
+function abrirModalExcluir(id, nome) {
+    estacaoParaExcluir = id;
+    document.getElementById('excluir-nome-estacao').textContent = nome ? `Excluindo: ${nome}` : 'Esta ação não pode ser desfeita';
+    document.getElementById('excluir-erro').style.display = 'none';
+    document.getElementById('modal-excluir').classList.add('aberto');
+}
+
+function fecharExcluir() {
+    estacaoParaExcluir = null;
+    document.getElementById('modal-excluir').classList.remove('aberto');
+}
+
+document.getElementById('modal-excluir')?.addEventListener('click', function(e) {
+    if (e.target === this) fecharExcluir();
+});
+
+async function confirmarExclusao() {
+    const err = document.getElementById('excluir-erro');
+    const btn = document.getElementById('btn-confirmar-excluir');
+
+    btn.disabled    = true;
+    btn.textContent = 'Excluindo...';
+
+    try {
+        const res  = await fetch(`/api/estacoes/${estacaoParaExcluir}`, {
+            method:  'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({})
+        });
+        const json = await res.json();
+
+        if (res.ok) { fecharExcluir(); carregarSensores(); }
+        else { err.textContent = json.erro || 'Erro ao excluir.'; err.style.display = 'block'; }
+    } catch (e) {
+        err.textContent   = 'Erro de conexão.';
+        err.style.display = 'block';
+    } finally {
+        btn.disabled    = false;
+        btn.textContent = '🗑 Confirmar Exclusão';
+    }
+}
+
+// ══════════════════════════════════════════════════════
+// ALERTAS
+// ══════════════════════════════════════════════════════
 let alertas = JSON.parse(localStorage.getItem('airguard_alertas') || '[]');
 const SNOME = { temperatura:'Temperatura', umidade:'Umidade', gases:'Gases MQ135', CO:'CO MQ7' };
 const COND  = { maior:'>', menor:'<' };
@@ -552,22 +953,21 @@ const COND  = { maior:'>', menor:'<' };
 function renderAlertas() {
     const lista = document.getElementById('alertas-lista');
     if (alertas.length === 0) {
-        lista.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:13px; font-weight:600; padding:16px;">Nenhum alerta configurado.</div>';
+        lista.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;font-weight:600;padding:16px;">Nenhum alerta configurado.</div>';
         return;
     }
     lista.innerHTML = alertas.map((a, i) => `
-        <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:10px; margin-bottom:8px; background:${a.severidade==='critico'?'#fff5f5':'#fffbeb'}; border-left:4px solid ${a.severidade==='critico'?'#ef4444':'#f59e0b'};">
-            <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:10px;margin-bottom:8px;background:${a.severidade==='critico'?'#fff5f5':'#fffbeb'};border-left:4px solid ${a.severidade==='critico'?'#ef4444':'#f59e0b'};">
+            <div style="display:flex;align-items:center;gap:10px;">
                 <span style="font-size:18px;">${a.severidade==='critico'?'🔴':'⚠️'}</span>
                 <div>
-                    <div style="font-size:13px; font-weight:800; color:#1e3a5f;">${a.desc || SNOME[a.sensor]}</div>
-                    <div style="font-size:12px; color:#64748b; font-weight:600;">${SNOME[a.sensor]} ${COND[a.cond]} ${a.valor} — <span style="color:${a.severidade==='critico'?'#dc2626':'#b45309'}">${a.severidade==='critico'?'Crítico':'Aviso'}</span></div>
+                    <div style="font-size:13px;font-weight:800;color:#1e3a5f;">${a.desc||SNOME[a.sensor]}</div>
+                    <div style="font-size:12px;color:#64748b;font-weight:600;">${SNOME[a.sensor]} ${COND[a.cond]} ${a.valor}</div>
                 </div>
             </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:12px; font-weight:700; color:${a.ativo?'#16a34a':'#94a3b8'}">${a.ativo?'● Ativo':'○ Inativo'}</span>
-                <button onclick="toggleAlerta(${i})" style="background:#fff; border:1px solid #e2e8f0; color:#64748b; font-family:Nunito,sans-serif; font-size:12px; font-weight:700; padding:4px 10px; border-radius:6px; cursor:pointer;">${a.ativo?'Desativar':'Ativar'}</button>
-                <button onclick="removerAlerta(${i})" style="background:#fff; border:1px solid #fee2e2; color:#ef4444; font-family:Nunito,sans-serif; font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px; cursor:pointer;">✕</button>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <button onclick="toggleAlerta(${i})" style="background:#fff;border:1px solid #e2e8f0;color:#64748b;font-family:Nunito,sans-serif;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;">${a.ativo?'Desativar':'Ativar'}</button>
+                <button onclick="removerAlerta(${i})" style="background:#fff;border:1px solid #fee2e2;color:#ef4444;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;padding:4px 10px;border-radius:6px;cursor:pointer;">✕</button>
             </div>
         </div>`).join('');
 }
@@ -575,7 +975,14 @@ function renderAlertas() {
 function salvarAlerta() {
     const valor = parseFloat(document.getElementById('al-valor').value);
     if (isNaN(valor)) { alert('Informe um valor numérico.'); return; }
-    alertas.push({ sensor: document.getElementById('al-sensor').value, cond: document.getElementById('al-cond').value, valor, severidade: document.getElementById('al-sev').value, desc: document.getElementById('al-desc').value.trim(), ativo: true });
+    alertas.push({
+        sensor: document.getElementById('al-sensor').value,
+        cond:   document.getElementById('al-cond').value,
+        valor,
+        severidade: document.getElementById('al-sev').value,
+        desc:   document.getElementById('al-desc').value.trim(),
+        ativo:  true
+    });
     localStorage.setItem('airguard_alertas', JSON.stringify(alertas));
     renderAlertas();
     document.getElementById('form-alerta').style.display = 'none';
@@ -586,140 +993,42 @@ function salvarAlerta() {
 function removerAlerta(i) { alertas.splice(i,1); localStorage.setItem('airguard_alertas', JSON.stringify(alertas)); renderAlertas(); }
 function toggleAlerta(i)  { alertas[i].ativo = !alertas[i].ativo; localStorage.setItem('airguard_alertas', JSON.stringify(alertas)); renderAlertas(); }
 
-
-//ancora do menu para passar direto para o perfil
-window.addEventListener('load', () => {
-    const ancora = window.location.hash.replace('#', '');
-
-    if (ancora) {
-        const btn = document.querySelector(`[onclick*="'${ancora}'"]`);
-        if (btn) mudarAba(ancora, btn);
-    }
-});
-
-
-function toggleUserMenu() {
-    document.getElementById('user-btn').classList.toggle('open');
-    document.getElementById('user-dd').classList.toggle('open');
-}
-document.addEventListener('click', e => {
-    const w = document.querySelector('.user-wrapper');
-    if (w && !w.contains(e.target)) {
-        document.getElementById('user-btn')?.classList.remove('open');
-        document.getElementById('user-dd')?.classList.remove('open');
-    }
-});
-
-
-
-//opção de logout 
-async function logout() {
-    await fetch('/logout', { method: 'POST' });
-    window.location.href = '/login';
-}
-
-
-
-
-
-
-//carregar a tela de cadastrar estações
-function abrirModal() {
-    document.getElementById('modal-estacao').classList.add('aberto');
-    document.getElementById('m-nome').focus();
-}
-
-function fecharModal() {
-    document.getElementById('modal-estacao').classList.remove('aberto');
-    // limpa os campos
-    document.getElementById('m-nome').value      = '';
-    document.getElementById('m-desc').value      = '';
-    document.getElementById('m-lat').value       = '';
-    document.getElementById('m-lng').value       = '';
-    document.getElementById('m-intervalo').value = '5';
-    // esconde o erro
-    const err = document.getElementById('modal-erro');
-    if (err) { err.textContent = ''; err.style.display = 'none'; }
-}
-
-// fecha ao clicar no overlay
-document.getElementById('modal-estacao')?.addEventListener('click', function(e) {
-    if (e.target === this) fecharModal();
-});
-
-// fecha com ESC
+// fecha ESC
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') fecharModal();
+    if (e.key === 'Escape') {
+        fecharModal();
+        fecharEditar();
+        fecharExcluir();
+    }
 });
 
-async function salvarEstacao() {
-    const nome      = document.getElementById('m-nome').value.trim();
-    const descricao = document.getElementById('m-desc').value.trim();
-    const latitude  = document.getElementById('m-lat').value;
-    const longitude = document.getElementById('m-lng').value;
-    const intervalo = document.getElementById('m-intervalo').value;
 
-    // validação
-    if (!nome) {
-        const err = document.getElementById('modal-erro');
-        err.textContent    = 'O nome da estação é obrigatório.';
-        err.style.display  = 'block';
-        document.getElementById('m-nome').focus();
-        return;
-    }
+function conectarWS() {
+    const ws = new WebSocket('ws://' + location.host);
 
-    // desabilita o botão para evitar duplo clique
-    const btn = document.getElementById('btn-salvar-estacao');
-    if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+    ws.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
 
-    try {
-        const res = await fetch('/api/estacoes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, descricao, latitude, longitude, intervalo })
-});
-
-        const json = await res.json();
-
-        if (res.ok) {
-            fecharModal();
-            carregarSensores(); // recarrega a lista sem recarregar a página
-        } else {
-            const err = document.getElementById('modal-erro');
-            err.textContent   = json.erro || 'Erro ao salvar estação.';
-            err.style.display = 'block';
+        if (msg.tipo === 'leitura') {
+            // pega o valor atual do card e soma +1
+            const el = document.getElementById('leituras-hoje');
+            const atual = parseInt(el.textContent) || 0;
+            el.textContent = atual + 1;
         }
-    } catch (e) {
-        console.error(e);
-        const err = document.getElementById('modal-erro');
-        err.textContent   = 'Erro de conexão. Tente novamente.';
-        err.style.display = 'block';
-    } finally {
-        if (btn) { btn.disabled = false; btn.textContent = 'Salvar Estação'; }
-    }
+    };
+
+    ws.onclose = () => setTimeout(conectarWS, 3000); // reconecta se cair
 }
 
-
-
-function excluirEstacao(id) {
-    confirmarSuperAdmin({
-        titulo: 'Excluir Estação?',
-        texto: 'Todos os sensores e leituras serão removidos.',
-        btnLabel: '🗑 Excluir',
-        onConfirm: async (senha) => {
-            await apiProtegida(`/api/estacoes/${id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ senha_superadmin: senha })
-            });
-            carregarSensores();
-        }
-    });
-}
+conectarWS();
 
 
 
 
+
+
+
+carregarSensores();
 renderAlertas();
 </script>
 

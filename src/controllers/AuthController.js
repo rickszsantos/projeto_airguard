@@ -1,5 +1,5 @@
 const bcrypt  = require('bcrypt');
-const { podeFazer } = require('../middlewares/VerificarSessao');
+const { podeFazer } = require('../middlewares/VerificarPermissao');
 const Usuario = require('../models/Usuario');
 const Leitura = require('../models/Leitura');
 const Estacao = require('../models/Estacao');
@@ -18,8 +18,25 @@ class AuthController {
     showLogin(req, res)          { return res.render('login', { query: req.query }); }
     showCadastro(req, res)       { return res.render('cadastro'); }
     showRecuperarSenha(req, res) { return res.render('recuperarSenha'); }
-    showConfiguracoes(req, res)  { return res.render('configuracao', this._ctx(req)); }
+    
+    
+    
+    
+    
+    showConfiguracoes(req, res) {
+    const Usuario = require('../models/Usuario');
+    const usuarios = Usuario.listarTodos(); // ← busca todos os usuários
 
+    return res.render('configuracao', {
+        ...this._ctx(req),
+        usuarioEmail: req.session.usuarioEmail || '', // ← faltava isso
+        usuarios                                       // ← faltava isso
+    });
+    }
+
+
+
+    
 
     
     showHome(req, res) {

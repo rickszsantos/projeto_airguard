@@ -66,7 +66,7 @@ class Estacao{
 
     leiturasdiarias() {
 
-        return db.prepare("SELECT COUNT(*) AS n FROM historico WHERE date(created_at) = date('now')").get()?.n ?? 0;
+        return db.prepare("SELECT COUNT(*) AS n FROM historico WHERE date(created_at, 'localtime') = date('now', 'localtime')").get()?.n ?? 0;
    
     }
 

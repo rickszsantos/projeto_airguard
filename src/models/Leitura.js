@@ -14,8 +14,8 @@ class Leitura{
         if (sensorDHT)  { stmt.run(sensorDHT.id,   temperatura, '°C'); }
         if (sensorDHT)  { stmt.run(sensorDHT.id,   umidade,     '%');  }
         if (sensorMQ7)  { stmt.run(sensorMQ7.id,   CO,          'ppm');}
-        if (sensorMQ135){ stmt.run(sensorMQ135.id,  gases,       'ppm');}
-
+        if (sensorMQ135){ stmt.run(sensorMQ135.id, gases,       'ppm');}
+        
        
         db.prepare(`
             INSERT INTO historico (estacao_id, temperatura, umidade, co_ppm, gases_ppm, indice_ar)
@@ -149,26 +149,7 @@ class Leitura{
 
 
 
-
-
-    ultimaLeitura() {
-        try {
-            return db.prepare(`
-                SELECT temperatura, umidade, co_ppm AS CO, gases_ppm AS gases,
-                       created_at AS timestamp
-                FROM historico
-                ORDER BY id DESC LIMIT 1
-            `).get() ?? null;
-        } catch { return null; }
-    }
-
-
-
-
-
-
-
-    
+ 
 
 
 

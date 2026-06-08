@@ -30,7 +30,7 @@ const AuthRoutes       = require('./src/routes/AuthRoutes');
 const LeituraRoutes     = require('./src/routes/LeituraRoutes');
 const EstacaoRoutes     = require('./src/routes/EstacaoRoutes');
 const LeituraController = require('./src/controllers/LeituraController');
- const { setConexaoESP32, enviarESP32 } = require('./src/utils/esp32');
+const { setConexaoESP32, enviarESP32, removerConexaoESP32 } = require('./src/utils/esp32');
 
  
 LeituraController.setWss(wss);

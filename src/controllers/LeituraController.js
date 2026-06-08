@@ -33,22 +33,25 @@ class LeituraController {
 
 
     receberDados(req, res) {
-        const { temperatura, umidade, gases, CO } = req.body;
+        const { temperatura, umidade, gases, CO, estacao_id } = req.body;
 
         if (temperatura === undefined) return res.status(400).json({ erro: 'Falta: temperatura' });
         if (umidade     === undefined) return res.status(400).json({ erro: 'Falta: umidade' });
         if (CO          === undefined) return res.status(400).json({ erro: 'Falta: CO' });
         if (gases       === undefined) return res.status(400).json({ erro: 'Falta: gases' });
 
-        Leitura.salvarLeitura(temperatura, umidade, CO, gases);
+        const idEstacao = parseInt(estacao_id) || 1; 
+        Leitura.salvarLeitura(temperatura, umidade, CO, gases, idEstacao);
 
         this._broadcast({ tipo: 'leitura', temperatura, umidade, CO, gases });
 
         const alertas = Leitura.alertasAtivos();
         this._broadcast({ tipo: 'alertas', total: alertas.length, lista: alertas });
 
-        return res.status(201).json({ status: 'ok', recebido: { temperatura, umidade, CO, gases } });
+        return res.status(201).json({ status: 'ok', recebido: { temperatura, umidade, CO, gases , estacao_id} });
     }
+
+
 
 
 
@@ -61,12 +64,17 @@ class LeituraController {
 
 
 
+
+
     historico(req, res) {
         const periodo = req.query.periodo || '7d';
         const { pontos, resumo } = Leitura.historicoAgregado(periodo);
         return res.json({ pontos, resumo, periodo });
     }
 
+
+
+    
 
     listarAlertas(req, res) {
         return res.json(Leitura.alertasAtivos());
@@ -92,21 +100,8 @@ class LeituraController {
 
 
 
-    listarEstacoes(req, res) {
-        return res.json(Estacao.listarComSensores());
-    }
 
 
-
-
-
-
-    criarEstacao(req, res) {
-        const { nome, descricao, latitude, longitude, intervalo } = req.body;
-        if (!nome) return res.status(400).json({ erro: 'Nome obrigatório' });
-        const result = Estacao.criar(nome, descricao, latitude, longitude, intervalo);
-        return res.status(201).json({ id: result.lastInsertRowid });
-    }
 
 
 
