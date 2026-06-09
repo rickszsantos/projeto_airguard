@@ -109,7 +109,7 @@ class Usuario {
     return true;
   }
 
-  // Usuários não são excluídos — apenas desativados (status=0)
+  
   desativar(id) {
     db.prepare('UPDATE usuarios SET status=0 WHERE id=?').run(id);
   }

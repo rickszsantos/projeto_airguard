@@ -28,13 +28,15 @@ class Estacao{
     resumo() {
         try {
             return {
-                estacoes_total:  db.prepare("SELECT COUNT(*) AS n FROM estacoes").get()?.n ?? 0,
+                estacoes_total:  db.prepare("SELECT COUNT(*) AS n FROM estacoes WHERE status != 'arquivada'").get()?.n ?? 0,
                 estacoes_ativas: db.prepare("SELECT COUNT(*) AS n FROM estacoes WHERE status = 'ativa'").get()?.n ?? 0,
                 sensores_total:  db.prepare("SELECT COUNT(*) AS n FROM sensores").get()?.n ?? 0,
                 sensores_ativos: db.prepare("SELECT COUNT(*) AS n FROM sensores WHERE status = 'ativo'").get()?.n ?? 0,
             };
         } catch { return { estacoes_total:0, estacoes_ativas:0, sensores_total:0, sensores_ativos:0 }; }
     }
+
+
 
 
 
@@ -57,17 +59,22 @@ class Estacao{
 
 
     atualizarStatus(id, status) {
-        db.prepare("UPDATE estacoes SET status = ? WHERE id = ?").run(status, id);
-        
+        db.prepare("UPDATE estacoes SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(status, id);
         const statusSensor = status === 'ativa' ? 'ativo' : 'inativo';
-    db.prepare("UPDATE sensores SET status = ? WHERE estacao_id = ?").run(statusSensor, id);
+        db.prepare("UPDATE sensores SET status = ? WHERE estacao_id = ?").run(statusSensor, id);
+    }
+
+
+    arquivar(id) {
+        db.prepare("UPDATE estacoes SET status = 'arquivada', updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(id);
+        db.prepare("UPDATE sensores SET status = 'inativo' WHERE estacao_id = ?").run(id);
     }
 
 
     leiturasdiarias() {
 
         return db.prepare("SELECT COUNT(*) AS n FROM historico WHERE date(created_at, 'localtime') = date('now', 'localtime')").get()?.n ?? 0;
-   
+    
     }
 
 

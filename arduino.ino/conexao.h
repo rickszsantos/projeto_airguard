@@ -1,5 +1,6 @@
 #ifndef CONEXAO_H
 #define CONEXAO_H
+#define ESTACAO_ID 1
 
 #include <WiFi.h>
 #include <ArduinoJson.h>
@@ -7,13 +8,17 @@
 #include <WebSocketsClient.h>
 
 
-const char* ssid       = "nome da rede";
-const char* password   = "senha";
-const char* serverIp   = "ip";
-const int   serverPort = porta;
+const char* ssid       = "";
+const char* password   = "";
+const char* serverIp   = "";
+const int   serverPort = ;
 
 
-WebSocketsClient ws;  // ← troca SocketIOclient por WebSocketsClient
+WebSocketsClient ws;
+
+
+void comandosDoSistema(String msg);
+
 
 void onWebSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
     switch (type) {
@@ -25,13 +30,13 @@ void onWebSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
             break;
         case WStype_TEXT:
             Serial.println("Servidor disse: " + String((char*)payload));
+            comandosDoSistema(String((char*)payload));
             break;
     }
 }
 
 void iniciarConexao() {
     WiFi.begin(ssid, password);
-    Serial.print("Conectando no WiFi");
 
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
@@ -39,7 +44,8 @@ void iniciarConexao() {
     }
     Serial.println("WiFi conectado!");
 
-    ws.begin(serverIp, serverPort, "/");  // ← caminho simples
+    String path = "/?tipo=esp32&estacao=" + String(ESTACAO_ID);
+    ws.begin(serverIp, serverPort, path.c_str()); 
     ws.onEvent(onWebSocketEvent);
     ws.setReconnectInterval(5000);
 }
