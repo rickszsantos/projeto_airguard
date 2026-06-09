@@ -87,6 +87,10 @@
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                     Usuários
                 </button>
+                <button class="tab" onclick="mudarAba('logs', this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Logs
+                </button>
                 <% } %>
             </div>
 
@@ -212,128 +216,108 @@
             <!-- ══ ABA USUÁRIOS ══ -->
             <% if (typeof pode === 'function' && pode('usuario:editar')) { %>
             <div id="aba-usuarios" class="aba-content" style="display:none">
-
-                <!-- sub-abas dentro de Usuários -->
-                <div class="sub-tabs-bar">
-                    <button class="sub-tab active" onclick="mudarSubAba('lista-usuarios', this)">👥 Usuários</button>
-                    <button class="sub-tab" onclick="mudarSubAba('logs-sistema', this)">📋 Logs do Sistema</button>
-                </div>
-
-                <!-- ── Lista de Usuários ── -->
-                <div id="sub-lista-usuarios" class="sub-aba-content">
-                    <div class="config-card" style="max-width:100%">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-                            <h3 class="card-title" style="margin:0">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                                Gerenciar Usuários
-                            </h3>
-                            <!-- legenda de status -->
-                            <div style="display:flex; gap:14px; font-size:12px; font-weight:700; color:#64748b;">
-                                <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Ativo — pode fazer login</span>
-                                <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span>Inativo — acesso bloqueado</span>
-                            </div>
+                <div class="config-card" style="max-width:100%">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                        <h3 class="card-title" style="margin:0">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                            Gerenciar Usuários
+                        </h3>
+                        <div style="display:flex; gap:14px; font-size:12px; font-weight:700; color:#64748b;">
+                            <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Ativo — pode fazer login</span>
+                            <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span>Inativo — acesso bloqueado</span>
                         </div>
+                    </div>
 
-                        <table class="usuarios-table">
-                            <thead>
-                                <tr>
-                                    <th>Usuário</th>
-                                    <th>E-mail</th>
-                                    <th>Perfil</th>
-                                    <th>Status</th>
-                                    <th>Cadastrado em</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% (usuarios || []).forEach(u => { %>
-                                <tr id="usuario-row-<%= u.id %>">
-                                    <td><strong><%= u.nome %></strong></td>
-                                    <td style="color:#64748b"><%= u.email %></td>
-                                    <td>
-                                        <% if (typeof pode === 'function' && pode('usuario:alterarPerfil') && u.perfil !== 'superadmin') { %>
-                                        <select class="select-perfil" onchange="alterarPerfil(<%= u.id %>, this.value)">
-                                            <option value="funcionario" <%= u.perfil==='funcionario'?'selected':'' %>>Funcionário</option>
-                                            <option value="admin"       <%= u.perfil==='admin'      ?'selected':'' %>>Admin</option>
-                                            <option value="superadmin"  <%= u.perfil==='superadmin' ?'selected':'' %>>SuperAdmin</option>
-                                        </select>
-                                        <% } else { %>
-                                        <span class="perfil-badge <%= u.perfil %>"><%= u.perfil %></span>
+                    <table class="usuarios-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>E-mail</th>
+                                <th>Perfil</th>
+                                <th>Status</th>
+                                <th>Cadastrado em</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% (usuarios || []).forEach(u => { %>
+                            <tr id="usuario-row-<%= u.id %>">
+                                <td><strong><%= u.nome %></strong></td>
+                                <td style="color:#64748b"><%= u.email %></td>
+                                <td>
+                                    <% if (typeof pode === 'function' && pode('usuario:alterarPerfil') && u.perfil !== 'superadmin') { %>
+                                    <select class="select-perfil" onchange="alterarPerfil(<%= u.id %>, this.value)">
+                                        <option value="funcionario" <%= u.perfil==='funcionario'?'selected':'' %>>Funcionário</option>
+                                        <option value="admin"       <%= u.perfil==='admin'      ?'selected':'' %>>Admin</option>
+                                        <option value="superadmin"  <%= u.perfil==='superadmin' ?'selected':'' %>>SuperAdmin</option>
+                                    </select>
+                                    <% } else { %>
+                                    <span class="perfil-badge <%= u.perfil %>"><%= u.perfil %></span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <span style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:<%= u.status ? '#16a34a' : '#ef4444' %>">
+                                        <span style="width:8px;height:8px;border-radius:50%;background:<%= u.status ? '#22c55e' : '#ef4444' %>;display:inline-block;flex-shrink:0"></span>
+                                        <%= u.status ? 'Ativo' : 'Inativo' %>
+                                    </span>
+                                </td>
+                                <td style="color:#94a3b8; font-size:12px;"><%= new Date(u.created_at).toLocaleDateString('pt-BR') %></td>
+                                <td>
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                        <button class="btn-usuario-acao" onclick="toggleStatusUsuario(<%= u.id %>, <%= u.status %>)" title="<%= u.status ? 'Bloquear acesso' : 'Reativar acesso' %>">
+                                            <%= u.status ? 'Desativar' : 'Ativar' %>
+                                        </button>
+                                        <% if (typeof pode === 'function' && pode('usuario:excluir') && u.perfil !== 'superadmin') { %>
+                                        <button class="btn-usuario-acao danger" onclick="excluirUsuario(<%= u.id %>, '<%= u.nome.replace(/'/g, "\\'") %>')">Excluir</button>
                                         <% } %>
-                                    </td>
-                                    <td>
-                                        <!--
-                                            status = 1 → Ativo   → usuário pode fazer login normalmente
-                                            status = 0 → Inativo → acesso bloqueado (não aparece erro de senha, só "conta inativa")
-                                            O status NÃO exclui o usuário — preserva todo o histórico de ações dele
-                                        -->
-                                        <span style="display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:<%= u.status ? '#16a34a' : '#ef4444' %>">
-                                            <span style="width:8px;height:8px;border-radius:50%;background:<%= u.status ? '#22c55e' : '#ef4444' %>;display:inline-block;flex-shrink:0"></span>
-                                            <%= u.status ? 'Ativo' : 'Inativo' %>
-                                        </span>
-                                    </td>
-                                    <td style="color:#94a3b8; font-size:12px;"><%= new Date(u.created_at).toLocaleDateString('pt-BR') %></td>
-                                    <td>
-                                        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                            <button class="btn-usuario-acao" onclick="toggleStatusUsuario(<%= u.id %>, <%= u.status %>)" title="<%= u.status ? 'Bloquear acesso do usuário' : 'Reativar acesso do usuário' %>">
-                                                <%= u.status ? 'Desativar' : 'Ativar' %>
-                                            </button>
-                                            <% if (typeof pode === 'function' && pode('usuario:excluir') && u.perfil !== 'superadmin') { %>
-                                            <button class="btn-usuario-acao danger" onclick="excluirUsuario(<%= u.id %>, '<%= u.nome.replace(/'/g, "\\'") %>')">Excluir</button>
-                                            <% } %>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                                <% if (!usuarios || usuarios.length === 0) { %>
-                                <tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:24px; font-weight:600;">Nenhum usuário encontrado.</td></tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %>
+                            <% if (!usuarios || usuarios.length === 0) { %>
+                            <tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:24px; font-weight:600;">Nenhum usuário encontrado.</td></tr>
+                            <% } %>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <!-- ── Logs do Sistema ── -->
-                <div id="sub-logs-sistema" class="sub-aba-content" style="display:none">
-                    <div class="config-card" style="max-width:100%">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-                            <h3 class="card-title" style="margin:0">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                                Logs do Sistema
-                            </h3>
-                            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                                <!-- filtro por tipo -->
-                                <select id="filtro-log-tipo" class="config-select" style="font-size:12px; padding:5px 10px;" onchange="carregarLogs()">
-                                    <option value="">Todos os eventos</option>
-                                    <option value="INSERT">Inserções</option>
-                                    <option value="UPDATE">Atualizações</option>
-                                    <option value="DELETE">Exclusões</option>
-                                    <option value="LOGIN">Logins</option>
-                                    <option value="LOGOUT">Logouts</option>
-                                </select>
-                                <!-- filtro por tabela -->
-                                <select id="filtro-log-tabela" class="config-select" style="font-size:12px; padding:5px 10px;" onchange="carregarLogs()">
-                                    <option value="">Todas as tabelas</option>
-                                    <option value="usuarios">Usuários</option>
-                                    <option value="estacoes">Estações</option>
-                                    <option value="sensores">Sensores</option>
-                                </select>
-                                <button class="btn-salvar" style="padding:6px 14px; font-size:12px;" onclick="carregarLogs()">↺ Atualizar</button>
-                            </div>
-                        </div>
-
-                        <!-- o que são os logs -->
-                        <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:#0369a1; font-weight:600; display:flex; gap:8px; align-items:flex-start;">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                            Os logs registram automaticamente todas as ações importantes do sistema — criação, edição e exclusão de estações, sensores e usuários. São gerados pelos triggers do banco de dados e não podem ser apagados manualmente.
-                        </div>
-
-                        <div id="logs-lista">
-                            <div style="text-align:center; color:#94a3b8; padding:24px; font-weight:600;">Carregando logs...</div>
+            <!-- ══ ABA LOGS ══ -->
+            <div id="aba-logs" class="aba-content" style="display:none">
+                <div class="config-card" style="max-width:100%">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+                        <h3 class="card-title" style="margin:0">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            Logs do Sistema
+                        </h3>
+                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                            <select id="filtro-log-tipo" class="config-select" style="font-size:12px; padding:5px 10px;" onchange="carregarLogs()">
+                                <option value="">Todos os eventos</option>
+                                <option value="INSERT">Inserções</option>
+                                <option value="UPDATE">Atualizações</option>
+                                <option value="DELETE">Exclusões</option>
+                                <option value="LOGIN">Logins</option>
+                                <option value="LOGOUT">Logouts</option>
+                            </select>
+                            <select id="filtro-log-tabela" class="config-select" style="font-size:12px; padding:5px 10px;" onchange="carregarLogs()">
+                                <option value="">Todas as tabelas</option>
+                                <option value="usuarios">Usuários</option>
+                                <option value="estacoes">Estações</option>
+                                <option value="sensores">Sensores</option>
+                            </select>
+                            <button class="btn-salvar" style="padding:6px 14px; font-size:12px;" onclick="carregarLogs()">↺ Atualizar</button>
                         </div>
                     </div>
-                </div>
 
+                    <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:#0369a1; font-weight:600; display:flex; gap:8px; align-items:flex-start;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Os logs registram automaticamente todas as ações importantes — criação, edição e exclusão de estações, sensores e usuários. São gerados pelos triggers do banco e não podem ser apagados manualmente.
+                    </div>
+
+                    <div id="logs-lista">
+                        <div style="text-align:center; color:#94a3b8; padding:24px; font-weight:600;">Clique em "Atualizar" para carregar os logs.</div>
+                    </div>
+                </div>
             </div>
             <% } %>
 
@@ -376,6 +360,9 @@ function mudarAba(aba, btn) {
     const el = document.getElementById('aba-' + aba);
     if (el) el.style.display = 'block';
     if (btn) btn.classList.add('active');
+
+    // carrega logs automaticamente ao entrar na aba
+    if (aba === 'logs') carregarLogs();
 }
 
 function ativarPorAncora() {
@@ -388,18 +375,6 @@ function ativarPorAncora() {
 
 window.addEventListener('load', ativarPorAncora);
 window.addEventListener('hashchange', ativarPorAncora);
-
-// ── Sub-abas dentro de Usuários ───────────────────────────
-function mudarSubAba(subAba, btn) {
-    document.querySelectorAll('.sub-aba-content').forEach(a => a.style.display = 'none');
-    document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
-    const el = document.getElementById('sub-' + subAba);
-    if (el) el.style.display = 'block';
-    if (btn) btn.classList.add('active');
-
-    // carrega logs ao entrar na aba
-    if (subAba === 'logs-sistema') carregarLogs();
-}
 
 // ── Utilitários ───────────────────────────────────────────
 function toggleSenha(id) {
@@ -633,36 +608,6 @@ async function carregarLogs() {
 </script>
 
 <style>
-/* ── Sub-abas dentro de Usuários ── */
-.sub-tabs-bar {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #e2e8f0;
-    padding-bottom: 0;
-}
-
-.sub-tab {
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid transparent;
-    padding: 8px 16px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #64748b;
-    cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
-    margin-bottom: -1px;
-}
-
-.sub-tab:hover { color: #2563eb; }
-
-.sub-tab.active {
-    color: #2563eb;
-    border-bottom-color: #2563eb;
-}
-
 /* ── Tabela de usuários ── */
 .usuarios-table { width: 100%; border-collapse: collapse; }
 .usuarios-table th {

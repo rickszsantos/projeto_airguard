@@ -1,9 +1,9 @@
-const express = require("express");
-const routes = express.Router();
-const AuthController = require("../controllers/AuthController");
-const validarCadastro  = require('../validators/AuthValidator');  
-const verificarSessao  = require('../middlewares/VerificarSessao'); 
-
+const express = require('express');
+const routes  = express.Router();
+const AuthController  = require('../controllers/AuthController');
+const validarCadastro = require('../validators/AuthValidator');
+const verificarSessao = require('../middlewares/VerificarSessao');
+const { verPermissao } = require('../middlewares/VerificarPermissao');
 
 routes.get("/login", AuthController.showLogin);
 
@@ -30,8 +30,23 @@ routes.get('/historico', verificarSessao,AuthController.showHistorico.bind(AuthC
 
 routes.get('/sensores', verificarSessao, AuthController.showSensores.bind(AuthController));
 
-routes.get('/', (req, res) => res.redirect('/login'));
 
+
+
+
+routes.put('/api/me/perfil', verificarSessao, AuthController.atualizarMeuPerfil.bind(AuthController));
+routes.put('/api/me/senha',  verificarSessao, AuthController.atualizarMinhaSenha.bind(AuthController));
+
+// ── Gerenciamento de usuários (admin+) ────────────────────
+routes.get   ('/api/usuarios',             verificarSessao, verPermissao('usuario:editar'),        AuthController.listarUsuarios.bind(AuthController));
+routes.patch ('/api/usuarios/:id/perfil',  verificarSessao, verPermissao('usuario:alterarPerfil'), AuthController.alterarPerfilUsuario.bind(AuthController));
+routes.patch ('/api/usuarios/:id/status',  verificarSessao, verPermissao('usuario:editar'),        AuthController.alterarStatusUsuario.bind(AuthController));
+routes.delete('/api/usuarios/:id',         verificarSessao, verPermissao('usuario:excluir'),       AuthController.excluirUsuario.bind(AuthController));
+
+// ── Logs do sistema (admin+) ──────────────────────────────
+routes.get('/api/logs', verificarSessao, verPermissao('usuario:editar'), AuthController.listarLogs.bind(AuthController));
+
+routes.get('/', (req, res) => res.redirect('/login'));
 
 
 module.exports = routes;

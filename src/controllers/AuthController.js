@@ -73,6 +73,9 @@ class AuthController {
         });
     }
 
+
+    
+
     async cadastro(req, res) {
         try {
             const { nome, email, senha } = req.body;
@@ -122,6 +125,200 @@ class AuthController {
     logout(req, res) {
         req.session.destroy(() => res.redirect('/login'));
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    async atualizarMeuPerfil(req, res) {
+    const { nome, email } = req.body;
+    const id = req.session.usuarioId;
+
+    if (!nome?.trim() || !email?.trim())
+      return res.status(400).json({ erro: 'Nome e email são obrigatórios.' });
+
+    const existente = Usuario.buscarPorEmail(email.trim());
+    if (existente && existente.id !== id)
+      return res.status(400).json({ erro: 'Este email já está em uso.' });
+
+    Usuario.atualizarPerfil(id, nome.trim(), email.trim());
+    req.session.usuarioNome  = nome.trim();
+    req.session.usuarioEmail = email.trim();
+    return res.json({ ok: true });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async atualizarMinhaSenha(req, res) {
+    const { senha_atual, nova_senha, confirmar_senha } = req.body;
+    const id = req.session.usuarioId;
+
+    if (!senha_atual || !nova_senha || !confirmar_senha)
+      return res.status(400).json({ erro: 'Preencha todos os campos.' });
+
+    if (nova_senha !== confirmar_senha)
+      return res.status(400).json({ erro: 'As senhas não coincidem.' });
+
+    if (nova_senha.length < 8)
+      return res.status(400).json({ erro: 'A nova senha deve ter pelo menos 8 caracteres.' });
+
+    const usuario  = Usuario.buscarPorId(id);
+    const completo = Usuario.buscarPorEmail(usuario.email);
+    const ok = await bcrypt.compare(senha_atual, completo.senha);
+    if (!ok) return res.status(400).json({ erro: 'Senha atual incorreta.' });
+
+    const hash = await bcrypt.hash(nova_senha, 10);
+    Usuario.atualizarSenha(id, hash);
+    return res.json({ ok: true });
+  }
+
+
+
+
+
+
+
+
+
+
+  listarUsuarios(req, res) {
+    return res.json(Usuario.listar());
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  async alterarPerfilUsuario(req, res) {
+    const { id } = req.params;
+    const { perfil } = req.body;
+
+    if (!['funcionario', 'admin', 'superadmin'].includes(perfil))
+      return res.status(400).json({ erro: 'Perfil inválido.' });
+
+    if (parseInt(id) === req.session.usuarioId && req.session.usuarioPerfil === 'superadmin')
+      return res.status(400).json({ erro: 'Não é possível alterar o próprio perfil de SuperAdmin.' });
+
+    Usuario.alterarPerfil(id, perfil);
+    return res.json({ ok: true });
+  }
+
+
+
+
+
+
+
+
+
+
+
+  async alterarStatusUsuario(req, res) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (![0, 1].includes(parseInt(status)))
+      return res.status(400).json({ erro: 'Status inválido.' });
+
+    if (parseInt(id) === req.session.usuarioId)
+      return res.status(400).json({ erro: 'Não é possível desativar sua própria conta.' });
+
+    Usuario.alterarStatus(id, parseInt(status));
+    return res.json({ ok: true });
+  }
+
+
+
+
+
+
+
+
+
+
+  excluirUsuario(req, res) {
+    const { id } = req.params;
+
+    if (parseInt(id) === req.session.usuarioId)
+      return res.status(400).json({ erro: 'Não é possível excluir sua própria conta.' });
+
+    const alvo = Usuario.buscarPorId(id);
+    if (!alvo) return res.status(404).json({ erro: 'Usuário não encontrado.' });
+    if (alvo.perfil === 'superadmin')
+      return res.status(400).json({ erro: 'Não é possível excluir um SuperAdmin.' });
+
+    Usuario.excluir(id);
+    return res.json({ ok: true });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  listarLogs(req, res) {
+    const db = require('../config/database');
+    const { tipo, tabela, limite } = req.query;
+
+    let sql = `
+      SELECT l.id, l.tipo_evento, l.tabela_afetada, l.registro_id,
+             l.descricao, l.dados_anteriores, l.dados_novos,
+             l.created_at, u.nome AS usuario_nome
+      FROM logs_sistema l
+      LEFT JOIN usuarios u ON u.id = l.usuario_id
+      WHERE 1=1
+    `;
+    const params = [];
+
+    if (tipo)   { sql += ' AND l.tipo_evento = ?';    params.push(tipo); }
+    if (tabela) { sql += ' AND l.tabela_afetada = ?'; params.push(tabela); }
+
+    sql += ' ORDER BY l.created_at DESC LIMIT ?';
+    params.push(parseInt(limite) || 100);
+
+    try {
+      const logs = db.prepare(sql).all(...params);
+      return res.json({ logs });
+    } catch (err) {
+      console.error('[listarLogs]', err);
+      return res.status(500).json({ erro: 'Erro ao carregar logs.' });
+    }
+  }
  
 }
  
