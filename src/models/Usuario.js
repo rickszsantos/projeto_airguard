@@ -97,16 +97,26 @@ class Usuario {
   }
 
 
+  atualizarFotoPerfil(id, caminhoFoto) {
+    db.prepare('UPDATE usuarios SET foto_perfil=? WHERE id=?').run(caminhoFoto, id);
+  }
 
 
+  promover(id) {
+    const u = this.buscarPorId(id);
+    if (!u || u.perfil !== 'funcionario') return false;
+    db.prepare("UPDATE usuarios SET perfil='admin' WHERE id=?").run(id);
+    return true;
+  }
 
-  excluir(id) {
-    db.prepare('DELETE FROM usuarios WHERE id=?').run(id);
+  // Usuários não são excluídos — apenas desativados (status=0)
+  desativar(id) {
+    db.prepare('UPDATE usuarios SET status=0 WHERE id=?').run(id);
   }
 
 
 
-  
+
 }
 
 module.exports = new Usuario();

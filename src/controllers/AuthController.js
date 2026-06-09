@@ -259,7 +259,35 @@ class AuthController {
 
 
 
+  async uploadFotoPerfil(req, res) {
+    const id = req.session.usuarioId;
+    if (!req.file) return res.status(400).json({ erro: 'Nenhuma imagem enviada.' });
 
+    const caminho = `/uploads/avatars/${req.file.filename}`;
+    Usuario.atualizarFotoPerfil(id, caminho);
+    req.session.usuarioFoto = caminho;
+    return res.json({ ok: true, foto: caminho });
+  }
+
+
+
+
+
+  async promoverUsuario(req, res) {
+    const { id } = req.params;
+
+    if (req.session.usuarioPerfil !== 'superadmin')
+      return res.status(403).json({ erro: 'Apenas o SuperAdmin pode promover usuários.' });
+
+    const alvo = Usuario.buscarPorId(parseInt(id));
+    if (!alvo)                        return res.status(404).json({ erro: 'Usuário não encontrado.' });
+    if (alvo.perfil !== 'funcionario') return res.status(400).json({ erro: 'Só é possível promover funcionários para Admin.' });
+    if (alvo.perfil === 'superadmin') return res.status(400).json({ erro: 'Não é possível alterar um SuperAdmin.' });
+
+    const ok = Usuario.promover(parseInt(id));
+    if (!ok) return res.status(400).json({ erro: 'Não foi possível promover este usuário.' });
+    return res.json({ ok: true });
+  }
 
 
 
@@ -276,7 +304,7 @@ class AuthController {
     if (alvo.perfil === 'superadmin')
       return res.status(400).json({ erro: 'Não é possível excluir um SuperAdmin.' });
 
-    Usuario.excluir(id);
+    Usuario.desativar(parseInt(id));
     return res.json({ ok: true });
   }
 
