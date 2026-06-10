@@ -4,4 +4,7 @@ const db = new Database(path.join(__dirname, '../../database/banco.db'));
 
 db.pragma('foreign_keys = ON');
 
+const runMigrations = require('./migrate');
+runMigrations(db);
+
 module.exports = db;

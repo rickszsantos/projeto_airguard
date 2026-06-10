@@ -101,6 +101,8 @@ class AuthController {
             const usuario = Usuario.buscarPorEmail(email);
             if (!usuario) return res.render('login', { erro: 'Email ou senha inválidos.' });
 
+            if (!usuario.status) return res.render('login', { erro: 'Conta desativada. Entre em contato com o administrador.' });
+
             const ok = await bcrypt.compare(senha, usuario.senha);
             if (!ok)  return res.render('login', { erro: 'Email ou senha inválidos.' });
 

@@ -217,14 +217,18 @@
             <% if (typeof pode === 'function' && pode('usuario:editar')) { %>
             <div id="aba-usuarios" class="aba-content" style="display:none">
                 <div class="config-card" style="max-width:100%">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
                         <h3 class="card-title" style="margin:0">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                             Gerenciar Usuários
                         </h3>
-                        <div style="display:flex; gap:14px; font-size:12px; font-weight:700; color:#64748b;">
-                            <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Ativo — pode fazer login</span>
-                            <span style="display:flex; align-items:center; gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span>Inativo — acesso bloqueado</span>
+                        <div style="position:relative; flex:1; min-width:200px; max-width:320px;">
+                            <svg style="position:absolute; left:10px; top:50%; transform:translateY(-50%); pointer-events:none;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="busca-usuarios" placeholder="Buscar por nome ou e-mail…"
+                                oninput="filtrarUsuarios(this.value)"
+                                style="width:100%; box-sizing:border-box; padding:7px 10px 7px 32px; border:1px solid #e2e8f0; border-radius:8px; font-family:Nunito,sans-serif; font-size:13px; font-weight:600; color:#1e3a5f; outline:none; background:#f8fafc; transition:border .15s;"
+                                onfocus="this.style.borderColor='#2563eb'; this.style.background='#fff'"
+                                onblur="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'">
                         </div>
                     </div>
 
@@ -239,20 +243,34 @@
                                 <th>Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="usuarios-tbody">
                             <% (usuarios || []).forEach(u => { %>
-                            <tr id="usuario-row-<%= u.id %>">
-                                <td><strong><%= u.nome %></strong></td>
+                            <tr id="usuario-row-<%= u.id %>" class="usuario-row"
+                                data-nome="<%= u.nome.toLowerCase() %>"
+                                data-email="<%= u.email.toLowerCase() %>">
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <div style="width:30px; height:30px; border-radius:50%; background:#2563eb22; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#2563eb; flex-shrink:0;">
+                                            <%= u.nome.substring(0,2).toUpperCase() %>
+                                        </div>
+                                        <strong><%= u.nome %></strong>
+                                    </div>
+                                </td>
                                 <td style="color:#64748b"><%= u.email %></td>
                                 <td>
                                     <% if (typeof pode === 'function' && pode('usuario:alterarPerfil') && u.perfil !== 'superadmin') { %>
-                                    <select class="select-perfil" onchange="alterarPerfil(<%= u.id %>, this.value)">
-                                        <option value="funcionario" <%= u.perfil==='funcionario'?'selected':'' %>>Funcionário</option>
-                                        <option value="admin"       <%= u.perfil==='admin'      ?'selected':'' %>>Admin</option>
-                                        <option value="superadmin"  <%= u.perfil==='superadmin' ?'selected':'' %>>SuperAdmin</option>
-                                    </select>
+                                    <div class="perfil-select-wrapper">
+                                        <select class="select-perfil-modern" onchange="alterarPerfil(<%= u.id %>, this.value)" data-perfil="<%= u.perfil %>">
+                                            <option value="funcionario" <%= u.perfil==='funcionario'?'selected':'' %>>&#128100; Funcion&aacute;rio</option>
+                                            <option value="admin"       <%= u.perfil==='admin'      ?'selected':'' %>>&#128737; Admin</option>
+                                            <option value="superadmin"  <%= u.perfil==='superadmin' ?'selected':'' %>>&#11088; SuperAdmin</option>
+                                        </select>
+                                    </div>
                                     <% } else { %>
-                                    <span class="perfil-badge <%= u.perfil %>"><%= u.perfil %></span>
+                                    <span class="perfil-badge <%= u.perfil %>">
+                                        <%= u.perfil === 'superadmin' ? '&#11088;' : u.perfil === 'admin' ? '&#128737;' : '&#128100;' %>
+                                        <%= u.perfil === 'superadmin' ? 'SuperAdmin' : u.perfil === 'admin' ? 'Admin' : 'Funcion&aacute;rio' %>
+                                    </span>
                                     <% } %>
                                 </td>
                                 <td>
@@ -263,22 +281,26 @@
                                 </td>
                                 <td style="color:#94a3b8; font-size:12px;"><%= new Date(u.created_at).toLocaleDateString('pt-BR') %></td>
                                 <td>
-                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        <button class="btn-usuario-acao" onclick="toggleStatusUsuario(<%= u.id %>, <%= u.status %>)" title="<%= u.status ? 'Bloquear acesso' : 'Reativar acesso' %>">
-                                            <%= u.status ? 'Desativar' : 'Ativar' %>
-                                        </button>
-                                        <% if (typeof pode === 'function' && pode('usuario:excluir') && u.perfil !== 'superadmin') { %>
-                                        <button class="btn-usuario-acao danger" onclick="excluirUsuario(<%= u.id %>, '<%= u.nome.replace(/'/g, "\\'") %>')">Excluir</button>
-                                        <% } %>
-                                    </div>
+                                    <% if (u.perfil !== 'superadmin') { %>
+                                    <button class="btn-usuario-acao <%= u.status ? 'warning' : 'success' %>"
+    onclick="desativarUsuario(<%= u.id %>, this)"
+    data-nome="<%= u.nome %>"
+    data-statusatual="<%= u.status %>"
+    title="<%= u.status ? 'Desativar' : 'Reativar acesso' %>">
+    <%= u.status ? 'Desativar' : 'Reativar' %>
+</button>
+                                    <% } %>
                                 </td>
                             </tr>
                             <% }) %>
                             <% if (!usuarios || usuarios.length === 0) { %>
-                            <tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:24px; font-weight:600;">Nenhum usuário encontrado.</td></tr>
+                            <tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:24px; font-weight:600;">Nenhum usu&aacute;rio encontrado.</td></tr>
                             <% } %>
                         </tbody>
                     </table>
+                    <div id="usuarios-sem-resultado" style="display:none; text-align:center; color:#94a3b8; padding:24px; font-weight:600; font-size:13px;">
+                        Nenhum usu&aacute;rio encontrado para esta busca.
+                    </div>
                 </div>
             </div>
 
@@ -527,24 +549,46 @@ async function toggleStatusUsuario(id, statusAtual) {
     });
 }
 
-async function excluirUsuario(id, nome) {
-    confirmarSuperAdmin({
-        titulo:   `Excluir ${nome}?`,
-        texto:    'O usuário e todos os seus dados serão removidos permanentemente.',
-        tipo:     'danger',
-        btnLabel: 'Excluir',
-        onConfirm: async (senha) => {
-            const r = await fetch(`/api/usuarios/${id}`, {
-                method:  'DELETE',
+async function desativarUsuario(id, nome, statusAtual) {
+    const novoStatus = statusAtual ? 0 : 1;
+    const acao = novoStatus ? 'Reativar' : 'Desativar';
+    const texto = novoStatus
+        ? `${nome} poderá fazer login novamente normalmente.`
+        : `${nome} terá o acesso bloqueado. Todos os dados são preservados.`;
+
+    confirmarAcao({
+        titulo:   `${acao} "${nome}"?`,
+        texto,
+        tipo:     novoStatus ? 'success' : 'warning',
+        btnLabel: acao,
+        onConfirm: async () => {
+            const r = await fetch(`/api/usuarios/${id}/status`, {
+                method:  'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ senha_superadmin: senha })
+                body:    JSON.stringify({ status: novoStatus })
             });
             const j = await r.json();
-            if (!r.ok) throw new Error(j.erro || 'Erro ao excluir.');
-            document.getElementById(`usuario-row-${id}`)?.remove();
-            toast('Usuário excluído!');
+            if (r.ok) {
+                toast(novoStatus ? 'Usuário reativado!' : 'Usuário desativado!');
+                setTimeout(() => location.reload(), 800);
+            } else throw new Error(j.erro || 'Erro.');
         }
     });
+}
+
+function filtrarUsuarios(termo) {
+    const q = (termo || '').toLowerCase().trim();
+    const rows = document.querySelectorAll('.usuario-row');
+    let visiveis = 0;
+    rows.forEach(row => {
+        const nome  = row.dataset.nome  || '';
+        const email = row.dataset.email || '';
+        const match = !q || nome.includes(q) || email.includes(q);
+        row.style.display = match ? '' : 'none';
+        if (match) visiveis++;
+    });
+    const semResult = document.getElementById('usuarios-sem-resultado');
+    if (semResult) semResult.style.display = (q && visiveis === 0) ? 'block' : 'none';
 }
 
 // ── Logs ──────────────────────────────────────────────────
@@ -622,27 +666,72 @@ async function carregarLogs() {
 .usuarios-table tr:last-child td { border-bottom: none; }
 
 .perfil-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 10px; border-radius: 99px; font-size: 11px; font-weight: 800;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 800;
 }
 .perfil-badge.superadmin { background: #fef9c3; color: #854d0e; }
 .perfil-badge.admin      { background: #dbeafe; color: #1d4ed8; }
 .perfil-badge.funcionario{ background: #f1f5f9; color: #475569; }
 
+/* ── Select de perfil moderno ── */
+.perfil-select-wrapper { position: relative; display: inline-block; }
+
+.select-perfil-modern {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 5px 28px 5px 10px;
+    font-family: Nunito, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e3a5f;
+    background: #f8fafc;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+    min-width: 130px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
+.select-perfil-modern:hover {
+    border-color: #2563eb;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px #2563eb18;
+}
+.select-perfil-modern:focus {
+    border-color: #2563eb;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px #2563eb22;
+}
+
+/* ── Botões de ação de usuário ── */
+.btn-usuario-acao {
+    background: none;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 5px 12px;
+    font-family: Nunito, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #64748b;
+    transition: all .12s;
+    white-space: nowrap;
+}
+.btn-usuario-acao:hover { background: #f1f5f9; }
+.btn-usuario-acao.warning { color: #b45309; border-color: #fed7aa; }
+.btn-usuario-acao.warning:hover { background: #fff7ed; }
+.btn-usuario-acao.success { color: #15803d; border-color: #bbf7d0; }
+.btn-usuario-acao.success:hover { background: #f0fdf4; }
+
+/* ── Select legado (mantido por compatibilidade) ── */
 .select-perfil {
     border: 1px solid #e2e8f0; border-radius: 7px; padding: 4px 8px;
     font-family: Nunito, sans-serif; font-size: 12px; font-weight: 700;
     color: #1e3a5f; background: #fff; cursor: pointer; outline: none;
 }
-
-.btn-usuario-acao {
-    background: none; border: 1px solid #e2e8f0; border-radius: 7px;
-    padding: 4px 10px; font-family: Nunito, sans-serif; font-size: 12px;
-    font-weight: 700; cursor: pointer; color: #64748b; transition: all .12s;
-}
-.btn-usuario-acao:hover { background: #f1f5f9; }
-.btn-usuario-acao.danger { color: #ef4444; border-color: #fee2e2; }
-.btn-usuario-acao.danger:hover { background: #fff5f5; }
 </style>
 
 </body>
