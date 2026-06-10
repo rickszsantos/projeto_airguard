@@ -483,51 +483,39 @@
 
 
 
-<!-- ══ MODAL PAUSAR — confirmação de pausa de leituras ══ -->
-<div class="modal-overlay" id="modal-arquivar">
-    <div class="modal-box" style="max-width:440px">
+<div class="modal-overlay" id="modal-excluir">
+    <div class="modal-box" style="max-width:420px">
         <div class="modal-header">
             <div class="modal-header-info">
-                <div class="modal-icon" style="background:#fef3c7; color:#b45309">
+                <div class="modal-icon" style="background:#fee2e2; color:#dc2626">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                        <path d="M10 11v6M14 11v6"/>
                     </svg>
                 </div>
                 <div>
-                    <p class="modal-title" style="color:#b45309">Arquivar Estação</p>
-                    <p class="modal-sub" id="arquivar-nome-estacao">Confirme o arquivamento</p>
+                    <p class="modal-title" style="color:#dc2626">Excluir Estação</p>
+                    <p class="modal-sub" id="excluir-nome-estacao">Esta ação não pode ser desfeita</p>
                 </div>
             </div>
-            <button class="modal-fechar" onclick="fecharArquivar()">✕</button>
+            <button class="modal-fechar" onclick="fecharExcluir()">✕</button>
         </div>
         <div class="modal-body">
-
-            <!-- Diferença visual entre pausar e arquivar -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
-                <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:12px;">
-                    <div style="font-size:12px; font-weight:800; color:#16a34a; margin-bottom:4px;">⏸ PAUSAR LEITURAS</div>
-                    <div style="font-size:12px; color:#15803d; font-weight:600; line-height:1.5;">Para o envio de dados. A estação continua visível e pode ser reativada a qualquer momento.</div>
-                </div>
-                <div style="background:#fff7ed; border:2px solid #fed7aa; border-radius:10px; padding:12px;">
-                    <div style="font-size:12px; font-weight:800; color:#b45309; margin-bottom:4px;">🗄 ARQUIVAR (esta ação)</div>
-                    <div style="font-size:12px; color:#b45309; font-weight:600; line-height:1.5;">Remove a estação da interface. O histórico e dados são preservados, mas ela não aparece mais no sistema.</div>
-                </div>
-            </div>
-
-            <div class="modal-info" style="background:#fff7ed; border-color:#fed7aa; color:#b45309">
+            <div class="modal-info" style="background:#fff5f5; border-color:#fecaca; color:#dc2626">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
                     <line x1="12" y1="9" x2="12" y2="13"/>
                     <line x1="12" y1="17" x2="12.01" y2="17"/>
                 </svg>
-                O histórico de leituras é preservado para fins de auditoria. O arquivamento não pode ser desfeito pela interface.
+                Todos os sensores e leituras serão removidos permanentemente.
             </div>
-            <div class="modal-erro" id="arquivar-erro" style="display:none"></div>
+            <div class="modal-erro" id="excluir-erro" style="display:none"></div>
         </div>
         <div class="modal-footer">
-            <button class="btn-cancelar" onclick="fecharArquivar()">Cancelar</button>
-            <button class="btn-excluir-confirm" id="btn-confirmar-arquivar" onclick="confirmarArquivamento()" style="background:#b45309">
-                🗄 Confirmar Arquivamento
+            <button class="btn-cancelar" onclick="fecharExcluir()">Cancelar</button>
+            <button class="btn-excluir-confirm" id="btn-confirmar-excluir" onclick="confirmarExclusao()">
+                🗑 Confirmar Exclusão
             </button>
         </div>
     </div>
@@ -610,9 +598,8 @@ const API_ESTACOES = '/api/estacoes';
 function statusBadge(status) {
     const map = {
         'ativa':      { label:'Ativa',      cls:'badge-ativa' },
-        'inativa':    { label:'Pausada',     cls:'badge-inativa' },
-        'manutencao': { label:'Manutenção', cls:'badge-manutencao' },
-        'arquivada':  { label:'Arquivada',  cls:'badge-arquivada' }
+        'inativa':    { label:'Inativa',    cls:'badge-inativa' },
+        'manutencao': { label:'Manutenção', cls:'badge-manutencao' }
     };
     const s = map[status?.toLowerCase()] ?? { label: status, cls: 'badge-inativa' };
     return `<span class="status-badge ${s.cls}">${s.label}</span>`;
@@ -634,40 +621,31 @@ function iconEstacao(nome) {
 }
 
 function botoeEstacao(id, status, est) {
-    const st = (status || '').toLowerCase();
-    const ativa = st === 'ativa';
-    const inativa = st === 'inativa';
-    const nomeSafe = (est.nome || '').replace(/'/g, "\\'");
+    const ativa = (status || '').toLowerCase() === 'ativa';
 
-    // Botão Editar
-    const btnEditar = podeEditar
-        ? `<button class="btn-acao btn-editar" onclick='abrirEditar(${JSON.stringify(est)})'>✏ Editar</button>`
-        : `<button class="btn-acao btn-editar sem-permissao" onclick="mostrarAvisoPermissao('Editar requer nível Admin ou superior.')" title="Sem permissão">✏ Editar</button>`;
-
-    if (!podeStatus) {
-        // sem permissão — mostra botões bloqueados
-        const btnP = `<button class="btn-acao btn-desativar sem-permissao" onclick="mostrarAvisoPermissao('Pausar requer nível Admin ou superior.')">⏸ Pausar</button>`;
-        const btnA = `<button class="btn-acao btn-arquivar sem-permissao" onclick="mostrarAvisoPermissao('Arquivar requer nível Admin ou superior.')">🗄 Arquivar</button>`;
-        return btnEditar + btnP + btnA;
-    }
-
-    let btnStatus, btnArquivar;
-
-    if (ativa) {
-        // Estação ativa: pode pausar (só stop leituras) ou arquivar (exclusão lógica)
-        btnStatus   = `<button class="btn-acao btn-desativar" onclick="alterarStatus(${id},'inativa',this)" title="Pausa as leituras. A estação continua cadastrada e pode ser reativada.">⏸ Pausar Leituras</button>`;
-        btnArquivar = `<button class="btn-acao btn-arquivar"  onclick="abrirModalArquivar(${id}, '${nomeSafe}')" title="Remove a estação do sistema. O histórico é preservado, mas ela não aparecerá mais.">🗄 Arquivar</button>`;
-    } else if (inativa) {
-        // Estação pausada: pode reativar ou arquivar
-        btnStatus   = `<button class="btn-acao btn-ativar" onclick="alterarStatus(${id},'ativa',this)">▶ Reativar</button>`;
-        btnArquivar = `<button class="btn-acao btn-arquivar" onclick="abrirModalArquivar(${id}, '${nomeSafe}')" title="Remove a estação do sistema. O histórico é preservado.">🗄 Arquivar</button>`;
+    // ativar/desativar — só admin ou superior
+    let btnToggle;
+    if (podeStatus) {
+        btnToggle = ativa
+            ? `<button class="btn-acao btn-desativar" onclick="alterarStatus(${id},'inativa',this)">⏻ Desativar</button>`
+            : `<button class="btn-acao btn-ativar"    onclick="alterarStatus(${id},'ativa',this)">⏻ Ativar</button>`;
     } else {
-        // manutencao ou outro
-        btnStatus   = `<button class="btn-acao btn-ativar" onclick="alterarStatus(${id},'ativa',this)">▶ Reativar</button>`;
-        btnArquivar = `<button class="btn-acao btn-arquivar" onclick="abrirModalArquivar(${id}, '${nomeSafe}')">🗄 Arquivar</button>`;
+        btnToggle = ativa
+            ? `<button class="btn-acao btn-desativar sem-permissao" onclick="mostrarAvisoPermissao('Desativar estações requer nível Admin ou superior.')">⏻ Desativar</button>`
+            : `<button class="btn-acao btn-ativar sem-permissao"    onclick="mostrarAvisoPermissao('Ativar estações requer nível Admin ou superior.')">⏻ Ativar</button>`;
     }
 
-    return btnEditar + btnStatus + btnArquivar;
+    // editar — admin ou superior
+    const btnEditar = podeEditar
+        ? `<button class="btn-acao btn-editar"  onclick='abrirEditar(${JSON.stringify(est)})'>✏ Editar</button>`
+        : `<button class="btn-acao btn-editar sem-permissao" onclick="mostrarAvisoPermissao('Editar estações requer nível Admin ou superior.')" title="Sem permissão">✏ Editar</button>`;
+
+    // excluir — admin ou superior
+    const btnExcluir = podeExcluir
+        ? `<button class="btn-acao btn-excluir" onclick="abrirModalExcluir(${id}, '${(est.nome||'').replace(/'/g,"\\'")}')">🗑 Excluir</button>`
+        : `<button class="btn-acao btn-excluir sem-permissao" onclick="mostrarAvisoPermissao('Excluir estações requer nível Admin ou superior.')" title="Sem permissão">🗑 Excluir</button>`;
+
+    return btnEditar + btnExcluir + btnToggle;
 }
 
 function renderEstacoes(estacoes) {
@@ -914,49 +892,49 @@ async function salvarEdicao() {
 }
 
 // ══════════════════════════════════════════════════════
-// MODAL — ARQUIVAR ESTAÇÃO (exclusão lógica)
+// MODAL — EXCLUIR ESTAÇÃO
 // ══════════════════════════════════════════════════════
-let estacaoParaArquivar = null;
+let estacaoParaExcluir = null;
 
-function abrirModalArquivar(id, nome) {
-    estacaoParaArquivar = id;
-    document.getElementById('arquivar-nome-estacao').textContent = nome ? `Arquivando: "${nome}"` : 'Confirme o arquivamento';
-    document.getElementById('arquivar-erro').style.display = 'none';
-    document.getElementById('modal-arquivar').classList.add('aberto');
+function abrirModalExcluir(id, nome) {
+    estacaoParaExcluir = id;
+    document.getElementById('excluir-nome-estacao').textContent = nome ? `Excluindo: ${nome}` : 'Esta ação não pode ser desfeita';
+    document.getElementById('excluir-erro').style.display = 'none';
+    document.getElementById('modal-excluir').classList.add('aberto');
 }
 
-function fecharArquivar() {
-    estacaoParaArquivar = null;
-    document.getElementById('modal-arquivar').classList.remove('aberto');
+function fecharExcluir() {
+    estacaoParaExcluir = null;
+    document.getElementById('modal-excluir').classList.remove('aberto');
 }
 
-document.getElementById('modal-arquivar')?.addEventListener('click', function(e) {
-    if (e.target === this) fecharArquivar();
+document.getElementById('modal-excluir')?.addEventListener('click', function(e) {
+    if (e.target === this) fecharExcluir();
 });
 
-async function confirmarArquivamento() {
-    const err = document.getElementById('arquivar-erro');
-    const btn = document.getElementById('btn-confirmar-arquivar');
+async function confirmarExclusao() {
+    const err = document.getElementById('excluir-erro');
+    const btn = document.getElementById('btn-confirmar-excluir');
 
     btn.disabled    = true;
-    btn.textContent = 'Arquivando...';
+    btn.textContent = 'Excluindo...';
 
     try {
-        const res  = await fetch(`/api/estacoes/${estacaoParaArquivar}`, {
+        const res  = await fetch(`/api/estacoes/${estacaoParaExcluir}`, {
             method:  'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({})
         });
         const json = await res.json();
 
-        if (res.ok) { fecharArquivar(); carregarSensores(); }
-        else { err.textContent = json.erro || 'Erro ao arquivar.'; err.style.display = 'block'; }
+        if (res.ok) { fecharExcluir(); carregarSensores(); }
+        else { err.textContent = json.erro || 'Erro ao excluir.'; err.style.display = 'block'; }
     } catch (e) {
         err.textContent   = 'Erro de conexão.';
         err.style.display = 'block';
     } finally {
         btn.disabled    = false;
-        btn.textContent = '🗄 Confirmar Arquivamento';
+        btn.textContent = '🗑 Confirmar Exclusão';
     }
 }
 
@@ -1015,7 +993,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         fecharModal();
         fecharEditar();
-        fecharArquivar();
+        fecharExcluir();
     }
 });
 

@@ -8,7 +8,7 @@ class Estacao{
             const estacoes = db.prepare(`
                 SELECT id, nome, descricao, latitude, longitude,
                        intervalo_leitura, status, created_at
-                FROM estacoes ORDER BY nome
+                FROM estacoes WHERE status != 'arquivada' ORDER BY nome
             `).all();
 
             return estacoes.map(e => ({
@@ -81,7 +81,8 @@ class Estacao{
 
 
     excluir(id) {
-    db.prepare("DELETE FROM estacoes WHERE id = ?").run(id);
+    db.prepare("UPDATE estacoes SET status = 'arquivada', updated_at = CURRENT_TIMESTAMP WHERE id = ?").run(id);
+    db.prepare("UPDATE sensores SET status = 'inativo' WHERE estacao_id = ?").run(id);
     }
 
 
